@@ -1,7 +1,12 @@
 import axios from 'axios'
 
+// repo URL donot contain /new
+const BASE = 'https://my-json-server.typicode.com/sawroryyin/331-02d/'
+
+
+// Shared axios instance
 const apiClient = axios.create({
-  baseURL: 'https://my-json-server.typicode.com/sawroryyin/331-02d/',
+  baseURL: BASE,
   withCredentials: false,
   headers: {
     Accept: 'application/json',
@@ -10,13 +15,24 @@ const apiClient = axios.create({
 })
 
 export default {
+  //  Get all news (no pagination)
   getNews() {
-    return apiClient.get('/news/')
+    return apiClient.get('news', { params: { t: Date.now() } })
   },
+
+  //  Get single news by id.
   getNewsById(id: number) {
-    return apiClient.get('/news/' + id)
+    return apiClient.get(`news/${id}`, { params: { t: Date.now() } })
   },
-  getNewsByPage(page: number, perPage: number) {
-    return apiClient.get(`/news?_page=${page}&_limit=${perPage}`)
+
+  // Server-side pagination + filter
+  getNewsByPage(page: number, perPage: number, status?: 'fake'|'not-fake'|'all') {
+    const params: Record<string, string|number> = {
+      _page: page,
+      _limit: perPage,
+      t: Date.now(),
+    }
+    if (status && status !== 'all') params.voteType = status
+    return apiClient.get('news', { params })
   },
 }
