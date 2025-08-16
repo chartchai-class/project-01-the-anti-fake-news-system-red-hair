@@ -4,20 +4,28 @@ import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+<!-- //top bar -->
+  <header class="sticky top-0 z-50 bg-white/90 border-b">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <!-- // logo and name -->
+      <div class="flex items-center gap-3">
+        <img
+          alt="Vue logo"
+          class="w-12 h-12 rounded object-cover"
+          src="@/assets/793535a9837c8f0e53e51ba7a0a88ade.jpg"
+        />
+        <HelloWorld msg="The Anti Fake News System Red Hair!" />
+      </div>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+     <!-- // add new butt -->
+      <RouterLink
+        to="/news/new"
+        class="inline-flex items-center gap-2 rounded-lg bg-blue-600 text-white px-3 py-1.5 hover:bg-blue-700"
+      >
+        <span class="text-lg leading-none">＋</span> Add News
+      </RouterLink>
     </div>
   </header>
 
   <RouterView />
 </template>
-
-<style></style>
