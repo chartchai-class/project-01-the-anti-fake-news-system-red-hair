@@ -38,7 +38,16 @@ watch(page, load)
 
 <template>
   <div class="container mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold mb-4">News List</h1>
+    <div class="flex justify-between items-center">
+      <h1 class="text-2xl font-bold mb-4">News List</h1>
+      <!-- Post-News button is appearing in navbar all the time and is moved to homeView only -->
+      <RouterLink
+        :to="{ name: 'post-news' }"
+        class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]"
+      >
+        <span class="text-lg leading-none">＋</span> Add News
+      </RouterLink>
+    </div>
 
     <FilterBar v-model:status="status" v-model:pageSize="pageSize" />
 
