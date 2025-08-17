@@ -4,10 +4,8 @@ import { useNewsListStore } from '@/stores/news'
 import FilterBar from '@/components/FilterBar.vue'
 import Pagination from '@/components/Pagination.vue'
 import NewsCard from '@/components/NewsCard.vue'
-import { useTempNewsStore } from '@/stores/tempNews'
 
 const store = useNewsListStore()
-const tempStore = useTempNewsStore()  
 
 const status = ref<'all'|'fake'|'not-fake'>('all')
 const page = ref(1)
@@ -55,7 +53,6 @@ watch(page, load)
     <div v-else-if="loading" class="p-6 text-gray-500">Loading…</div>
 
     <div v-else class="grid md:grid-cols-3 gap-4">
-      <NewsCard v-for="n in tempStore.list" :key="'temp-' + n.id" :item="n" />
       <NewsCard v-for="n in store.list" :key="n.id" :item="n" />
     </div>
 

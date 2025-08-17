@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useTempNewsStore } from '@/stores/tempNews';
+import { useNewsListStore } from '@/stores/news';
 import { ref } from 'vue';
 
-const tempNewsStore = useTempNewsStore();
+const newsListStore = useNewsListStore();
 
 const title = ref('');
 const category = ref('General');
@@ -15,7 +15,7 @@ function postNews(){
     if( !title.value || !content.value ){
         return alert('Title and Content are required.');
     }
-    tempNewsStore.addNews({
+    newsListStore.addNews({
         title: title.value,
         category: category.value,
         reporter: reporter.value,
