@@ -19,7 +19,7 @@ import HelloWorld from './components/HelloWorld.vue'
 
      <!-- // add new butt -->
       <RouterLink
-        to="/news/new"
+        :to="{ name: 'post-news' }"
         class="inline-flex items-center gap-2 rounded-lg bg-blue-600 text-white px-3 py-1.5 hover:bg-blue-700"
       >
         <span class="text-lg leading-none">＋</span> Add News
