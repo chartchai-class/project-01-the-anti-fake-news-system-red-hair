@@ -22,6 +22,12 @@ const router = createRouter({
       path:'/post-news',
       name: 'post-news',
       component: PostNews
+    },
+    {
+      path: '/news/:id',
+      name: 'news-detail',
+      component: () => import('@/views/NewsDetailView.vue'),
+      props: true
     }
   ],
 })
