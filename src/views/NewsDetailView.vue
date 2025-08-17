@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useNewsListStore } from '@/stores/news'
-import type { News, Comment, voteType } from '@/types'
+import type { News } from '@/types'
+import Pagination from '@/components/Pagination.vue'
 
 const store = useNewsListStore()
 const route = useRoute()
@@ -12,17 +13,23 @@ const news = ref<News | null>(null)
 const loading = ref(false)
 const err = ref<string | null>(null)
 const showComments = ref(false)
-const newComment = ref<string>('')
 
-// fetch news by id on mounted
+// pagination states
+const page = ref(1)
+const pageSize = 5
+const pagedComments = computed(() => {
+  if (!news.value) return []
+  const start = (page.value - 1) * pageSize
+  return news.value.comments.slice(start, start + pageSize)
+})
+
+// fetch news by id
 async function loadNews() {
   const id = Number(route.params.id)
   if (!id) {
     err.value = 'Invalid news ID'
     return
-  }
-
-  loading.value = true
+  } loading.value = true
   err.value = null
   try {
     news.value = await store.fetchOne(id)
@@ -34,22 +41,17 @@ async function loadNews() {
   }
 }
 
-// add comment
-function addComment() {
-  if (!news.value || !newComment.value.trim()) return
 
-  store.addComment(news.value.id, {
-    author: 'Anonymous',
-    content: newComment.value,
-    image: '',
-    voteType: 'not-fake',
-  })
-  newComment.value = ''
-}
 
 // go back to home
 function goHome() {
   router.push({ name: 'home' })
+}
+
+// navigation for vote & comment pages
+
+function goVoteAndCommentPage() {
+  router.push({ name: 'vote-and-comment', params: { id: news.value?.id } });
 }
 
 onMounted(loadNews)
@@ -57,20 +59,22 @@ onMounted(loadNews)
 
 <template>
   <div class="container mx-auto px-4 py-6">
-    <button @click="goHome" class="mb-4 px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">
-      ← Back to Home
+    <button @click="goHome" class="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 ml-4 mt-2">
+      Back
     </button>
 
     <div v-if="err" class="text-red-600">{{ err }}</div>
     <div v-else-if="loading" class="text-gray-500">Loading…</div>
-    <div v-else-if="news" class="relative flex flex-col md:flex-row gap-6">
-      <!-- main content -->
+    <div v-else-if="news" class="form flex flex-col max-w-md mx-auto p-4 border rounded shadow">
       <div class="flex-1">
-        <h1 class="text-3xl font-bold mb-2">{{ news.title }}</h1>
+        <h1 class="text-2xl font-bold mb-2">{{ news.title }}</h1>
         <div class="text-sm text-gray-500 mb-4">
-          <span class="mr-2">{{ news.category }}</span>
-          <span>by {{ news.reporter }}</span> •
+          <span>by {{ news.reporter }}  
+          </span> •
           <span>{{ new Date(news.newsDateTime).toLocaleString() }}</span>
+        </div>
+        <div class="text-sm text-gray-500 mb-4">
+          <span class="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">{{ news.category }}</span>
         </div>
 
         <img v-if="news.image"
@@ -84,41 +88,69 @@ onMounted(loadNews)
         <p class="text-gray-700 mb-4">{{ news.description }}</p>
         <div class="prose mb-4" v-html="news.content"></div>
 
-        <div class="flex items-center gap-4 text-sm text-gray-600">
-          <span>Fake: {{ news.fakeCount }}</span>
-          <span>Not-fake: {{ news.notFakeCount }}</span>
-          <span :class="news.voteType==='fake' ? 'text-red-600' : 'text-green-600'">
+        <div class="flex items-center justify-between gap-4 text-sm text-gray-600 mb-4">
+          <div class="flex items-center gap-4">
+            <span>Fake: {{ news.fakeCount }}</span>
+            <span>Not-fake: {{ news.notFakeCount }}</span>
+          </div>
+          <span class="px-2 py-0.5 rounded-full items-end" :class="news.voteType==='fake' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'">
             {{ news.voteType==='fake' ? 'Fake' : 'Not-fake' }}
           </span>
         </div>
 
-        <button @click="showComments = !showComments"
-                class="mt-4 px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700">
-          {{ showComments ? 'Hide' : 'Show' }} Comments ({{ news.comments.length }})
-        </button>
+        <div class="flex items-center justify-between gap-4 text-sm text-gray-600 mb-4">
+            <div class="flex flex-col gap-2">
+            <button @click="showComments = true"
+                class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                Show Comments ({{ news.comments.length }})
+            </button>
+            </div>
+            <div class="flex flex-col gap-2">
+                <button @click="goVoteAndCommentPage"
+                    class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                    Vote & Comment
+                </button>
+            </div>
+        </div>
       </div>
+    </div>
 
-      <!-- comment sidebar -->
-      <div v-if="showComments" class="w-full md:w-80 bg-gray-100 p-4 rounded shadow overflow-y-auto max-h-[80vh]">
-        <h2 class="font-semibold mb-2">Comments</h2>
+    <div v-if="showComments" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg relative max-h-[90vh] overflow-y-auto">
+        <button @click="showComments = false"
+                class="absolute top-2 right-2 text-gray-600 hover:text-black text-2xl font-bold">
+          ✕
+        </button>
 
-        <div v-for="c in news.comments" :key="c.id" class="mb-3 p-2 bg-white rounded shadow-sm">
-          <div class="flex items-center justify-between text-xs text-gray-500 mb-1">
-            <span>{{ c.author }}</span>
-            <span>{{ new Date(c.commentDateTime).toLocaleString() }}</span>
+        <h2 class="text-2xl font-semibold mb-4 text-center">Comments</h2>
+
+        <div v-for="c in pagedComments" :key="c.id" class="form flex flex-col max-w-md mx-auto p-4 border rounded shadow">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between text-sm text-gray-500 mb-2">
+            <span class="font-bold text-gray-800">{{ c.author }}</span>
+            <span class="text-xs sm:text-sm mt-1 sm:mt-0">{{ new Date(c.commentDateTime).toLocaleString() }}</span>
           </div>
-          <p class="text-gray-700">{{ c.content }}</p>
+          <div class="flex items-center justify-between gap-4 text-sm text-gray-600 mb-4">
+            <p class="text-gray-700 mb-2">{{ c.content }}</p>
+            <span class="inline-block text-xs px-2 py-0.5 rounded-full font-semibold"
+                  :class="c.voteType === 'fake' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'">
+                {{ c.voteType === 'fake' ? 'Fake' : 'Not-fake' }}
+            </span>
+          </div>
+          <img v-if="c.image" :src="c.image" alt="Vote image"
+            class="mt-2 rounded-lg object-cover w-full h-auto max-h-48"
+            loading="lazy"
+            referrerpolicy="no-referrer"
+            @error="($event.target as HTMLImageElement).style.display='none'" />
         </div>
-
-        <div class="mt-4">
-          <textarea v-model="newComment" placeholder="Add your comment..."
-                    class="w-full p-2 border rounded mb-2 resize-none"></textarea>
-          <button @click="addComment"
-                  class="w-full px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
-            Submit Comment
-          </button>
-        </div>
+        
+        
+        
+        <Pagination :total="news.comments.length"
+                    :page="page"
+                    :page-size="pageSize"
+                    @update:page="page = $event" />
       </div>
     </div>
   </div>
 </template>
+
