@@ -28,6 +28,12 @@ const router = createRouter({
       name: 'news-detail',
       component: () => import('@/views/NewsDetailView.vue'),
       props: true
+    },
+    {
+      path: '/news/:id/comments',
+      name: 'news-comments',
+      component: () => import('@/views/CommentListView.vue'),
+      props: true
     }
   ],
 })
