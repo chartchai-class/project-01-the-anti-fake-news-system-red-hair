@@ -4,10 +4,11 @@ import { useRoute, useRouter } from 'vue-router'
 import type { News } from '@/types'
 import NewsServices from '@/services/NewsServices'
 import CommentListView from '@/views/CommentListView.vue'
-
+import { useNewsListStore } from '@/stores/news'
 const route = useRoute()
 const router = useRouter()
 
+const newsStore = useNewsListStore()
 const news = ref<News | null>(null)
 const loading = ref(false)
 const err = ref<string | null>(null)
@@ -20,11 +21,26 @@ async function loadNews() {
     loading.value = false
     return
   }
+  
   try {
+    // First check if this item exists in the store (both temp and server items)
+    const storeItem = newsStore.getById(id)
+    if (storeItem) {
+      news.value = storeItem
+      loading.value = false
+      return
+    }
+    
+    // If not in store and it's a temp item, it doesn't exist
+    if (id < 0) {
+      throw new Error('Temporary news item not found')
+    }
+    
+    // For regular items not in store, fetch from server
     const res = await NewsServices.getNewsById(id)
     news.value = res.data
-  } catch (e: any) {
-    err.value = e?.message ?? 'Failed to load news'
+  } catch (e: unknown) {
+    err.value = e instanceof Error ? e.message : 'Failed to load news'
   } finally {
     loading.value = false
   }
