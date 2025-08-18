@@ -22,9 +22,9 @@ function revive(n: any): News {
   }
 }
 
-function makeTempNews(input: Partial<News>): News{
+function makeTempNews(input: Partial<News>): News {
   const id = -(Date.now())
-  return{
+  return {
     id: id,
     title: input.title ?? 'Newly Added News',
     category: input.category ?? 'General',
@@ -32,11 +32,11 @@ function makeTempNews(input: Partial<News>): News{
     newsDateTime: new Date(),
     description: input.description ?? '',
     content: input.content ?? '',
-    image: input.image || 'https://i.pinimg.com/1200x/e7/f6/5b/e7f65bb7011717f5c09d900866fdff4a.jpg', //just hamster image xD
+    image: input.image || 'https://i.pinimg.com/1200x/e7/f6/5b/e7f65bb7011717f5c09d900866fdff4a.jpg', // just hamster image xD / wow he is good gym bro!!
     fakeCount: 0,
     notFakeCount: 1,
-    voteType: 'not-fake',
-    comments: []
+    voteType: input.voteType === 'fake' ? 'fake' : 'not-fake',
+    comments: [],
   }
 }
 
@@ -58,12 +58,12 @@ export const useNewsListStore = defineStore('newsList', {
       // First check the current combined list
       const fromList = s.list.find(n => n.id === id)
       if (fromList) return fromList
-      
+
       // Then check temp list for negative IDs
       if (id < 0) {
         return s.tempList.find(n => n.id === id) ?? null
       }
-      
+
       // Finally check server list for positive IDs
       return s.serverList.find(n => n.id === id) ?? null
     },
@@ -71,7 +71,7 @@ export const useNewsListStore = defineStore('newsList', {
 
   actions: {
     //  Fetch paginated list from API no more calculated
-    async fetchList({ status='all' as 'all'|voteType, page=1, pageSize=12 } = {}) {
+    async fetchList({ status = 'all' as 'all' | voteType, page = 1, pageSize = 12 } = {}) {
       const res = await NewsServices.getNewsByPage(page, pageSize, status)
       const revived = (res.data as any[]).map(revive)
 
@@ -80,24 +80,32 @@ export const useNewsListStore = defineStore('newsList', {
       const total = totalHeader ? Number(totalHeader) : revived.length
 
       this.serverList = revived
-      this.serverTotal = (Number.isFinite(total) ? total : revived.length)
+      this.serverTotal = Number.isFinite(total) ? total : revived.length
       this.loaded = true
     },
 
     async fetchOne(id: number) {
       const { data } = await NewsServices.getNewsById(id)
-      return revive(data) // ใช้ค่าจาก DB ตรง ๆ
+      return revive(data) // use DB values as-is
     },
 
     // Pls dont read with tears -- I somehow messed up your code and fetch from here
     // fetch both server data + temp news data
-    async fetchOverallTotal({status='all' as 'all'|voteType, page =1, pageSize=12} = {}) {
+    async fetchOverallTotal({ status = 'all' as 'all' | voteType, page = 1, pageSize = 12 } = {}) {
       await this.fetchList({ status, page, pageSize })
-      this.total = this.serverTotal + this.tempTotal
-      // Calculate start index for tempList items on the current page
-      const tempStart = Math.max(0, (page - 1) * pageSize - this.serverTotal)
-      const tempItems = tempStart >= 0 ? this.tempList.slice(tempStart, tempStart + pageSize - this.serverList.length) : []
 
+      // filter temp by current status before combining
+      const tempFiltered = status === 'all' ? this.tempList : this.tempList.filter(n => n.voteType === status)
+      this.tempTotal = tempFiltered.length
+      this.total = this.serverTotal + this.tempTotal
+
+      // how many slots remain on this page after server items
+      const remainingSlots = Math.max(0, pageSize - this.serverList.length)
+      // offset for temp items if server already filled previous pages
+      const offset = Math.max(0, (page - 1) * pageSize - this.serverTotal)
+      const tempItems = remainingSlots > 0 ? tempFiltered.slice(offset, offset + remainingSlots) : []
+
+      // combine: server first, then temp for this page
       this.list = [...this.serverList, ...tempItems]
     },
 
@@ -109,7 +117,7 @@ export const useNewsListStore = defineStore('newsList', {
     },
 
     // commentpart didt work in mainpage form design but it look good dont want to get rid of it
-    addComment(newsId: number, payload: Omit<Comment,'id'|'newsId'|'commentDateTime'>) {
+    addComment(newsId: number, payload: Omit<Comment, 'id' | 'newsId' | 'commentDateTime'>) {
       const n = this.list.find(x => x.id === newsId); if (!n) return
       const nextId = Math.max(0, ...n.comments.map(c => c.id)) + 1
       n.comments.push({ id: nextId, newsId, commentDateTime: new Date(), ...payload })
