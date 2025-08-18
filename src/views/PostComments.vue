@@ -70,49 +70,76 @@ function clearForm() {
     @close="alterShow = false"
   />
 
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-neutral-300 flex flex-col">
-    <RouterLink :to="{ name: 'home' }" class="self-start">
+    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-neutral-300 flex flex-col">
+        <RouterLink :to="{ name: 'home' }" class="self-start">
         <button class="bg-black text-white px-3 py-1 rounded hover:bg-[#720000] ml-4 mt-6 mb-4 shadow">Back</button>
-    </RouterLink>
-    <div class="flex flex-col items-center justify-center flex-1">
-        <div class="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
-    <h2 class="text-2xl font-bold text-center mb-4 text-black">Post Comment</h2>
-        <form @submit.prevent="postComment" class="space-y-4">
-        
-        <div>
-            <label class="block mb-2 font-semibold text-gray-700">Author</label>
-            <input v-model="author" type="text"
-            class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 transition" />
-        </div>
+        </RouterLink>
 
-        <div>
-            <label class="block mb-2 font-semibold text-gray-700">Content</label>
-            <textarea v-model="content" rows="3" placeholder="Write your comment..."
-            class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 transition"></textarea>
-        </div>
+        <div class="flex flex-col items-center justify-center flex-1">
+            <div class="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+                <h2 class="text-2xl font-bold text-center mb-6 text-black">Vote & Comment</h2>
 
-        <div>
-            <label class="block mb-2 font-semibold text-gray-700">Image URL (optional)</label>
-            <input v-model="image" type="text" placeholder="Enter image URL"
-            class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 transition" />
-        </div>
+                <form @submit.prevent="postComment" class="space-y-5">
+                
+                <!-- Vote Buttons -->
+                <div class="flex justify-center gap-4">
+                    <button
+                    type="button"
+                    @click="voteType = 'fake'"
+                    :class="[
+                        'px-4 py-2 rounded-lg font-bold shadow transition',
+                        voteType === 'fake'
+                        ? 'bg-red-600 text-white'
+                        : 'bg-red-100 text-red-600 hover:bg-red-200'
+                    ]"
+                    >
+                    Fake
+                    </button>
+                    <button
+                    type="button"
+                    @click="voteType = 'not-fake'"
+                    :class="[
+                        'px-4 py-2 rounded-lg font-bold shadow transition',
+                        voteType === 'not-fake'
+                        ? 'bg-green-600 text-white'
+                        : 'bg-green-100 text-green-600 hover:bg-green-200'
+                    ]"
+                    >
+                    Not-Fake
+                    </button>
+                </div>
 
-        <div>
-            <label class="block mb-2 font-semibold text-gray-700">Vote Type</label>
-            <select v-model="voteType"
-            class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 transition">
-            <option value="not-fake">Not Fake</option>
-            <option value="fake">Fake</option>
-            </select>
-        </div>
+                <!-- Author -->
+                <div>
+                    <label class="block mb-2 font-semibold text-gray-700">Author</label>
+                    <input v-model="author" type="text"
+                    class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 transition" />
+                </div>
 
-        <button type="submit"
-            class="w-full bg-black text-white py-2 rounded-lg font-bold hover:bg-[#720000] transition shadow">
-            Post Comment
-        </button>
-        </form>
+                <!-- Content -->
+                <div>
+                    <label class="block mb-2 font-semibold text-gray-700">Content</label>
+                    <textarea v-model="content" rows="3" placeholder="Write your comment..."
+                    class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 transition"></textarea>
+                </div>
+
+                <!-- Image URL -->
+                <div>
+                    <label class="block mb-2 font-semibold text-gray-700">Image URL (optional)</label>
+                    <input v-model="image" type="text" placeholder="Enter image URL"
+                    class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 transition" />
+                    <div v-if="image.trim()" class="mt-3 flex justify-center">
+                    <img :src="image" alt="Preview" class="max-h-40 rounded-lg border shadow" />
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit"
+                    class="w-full bg-black text-white py-2 rounded-lg font-bold hover:bg-[#720000] transition shadow">
+                    Post Comment
+                </button>
+                </form>
+            </div>
+        </div>
     </div>
-    </div>
-    
-  </div>
 </template>
