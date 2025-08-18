@@ -7,6 +7,11 @@ const toInt = (v: any) => {
   const n = typeof v === 'number' ? v : parseInt(String(v), 10)
   return Number.isFinite(n) ? n : 0
 }
+
+function computeVoteType(fakeCount: number, notFakeCount: number): voteType {
+  return fakeCount > notFakeCount ? 'fake' : 'not-fake'
+}
+
 // Normalize a raw News item from API
 function revive(n: any): News {
   return {
@@ -14,7 +19,7 @@ function revive(n: any): News {
     newsDateTime: new Date(n.newsDateTime),
     fakeCount: toInt(n.fakeCount),
     notFakeCount: toInt(n.notFakeCount),
-    voteType: n.voteType === 'fake' || n.voteType === 'not-fake' ? n.voteType : 'not-fake',
+    voteType: computeVoteType(toInt(n.fakeCount), toInt(n.notFakeCount)),
     comments: (n.comments ?? []).map((c: any) => ({
       ...c,
       commentDateTime: new Date(c.commentDateTime),
@@ -35,8 +40,21 @@ function makeTempNews(input: Partial<News>): News{
     image: input.image || 'https://i.pinimg.com/1200x/e7/f6/5b/e7f65bb7011717f5c09d900866fdff4a.jpg', //just hamster image xD
     fakeCount: 0,
     notFakeCount: 1,
-    voteType: 'not-fake',
+    voteType: computeVoteType(0, 1),
     comments: []
+  }
+}
+
+function makeTempComment(newsId: number, input: Partial<Comment>): Comment {
+  const id = -(Date.now()) // negative ID for temp comments
+  return {
+    id,
+    newsId,
+    author: input.author ?? 'Anonymous',
+    content: input.content ?? '',
+    image: input.image ?? '',
+    voteType: input.voteType ?? 'not-fake',
+    commentDateTime: new Date(),
   }
 }
 
@@ -75,6 +93,25 @@ export const useNewsListStore = defineStore('newsList', {
       const res = await NewsServices.getNewsByPage(page, pageSize, status)
       const revived = (res.data as any[]).map(revive)
 
+      // Preserve local comments if already present
+      for (const item of revived) {
+        const existing = this.getById(item.id)
+        if (existing) {
+          // merge comments (keep existing temp ones)
+          const existingCommentIds = new Set(existing.comments.map(c => c.id))
+          item.comments = [
+            ...existing.comments,
+            ...item.comments.filter(c => !existingCommentIds.has(c.id)),
+          ]
+
+          // ✅ preserve locally updated counts
+          item.fakeCount = existing.fakeCount
+          item.notFakeCount = existing.notFakeCount
+
+          // ✅ recompute voteType
+          item.voteType = computeVoteType(item.fakeCount, item.notFakeCount)
+        }
+      }
       const totalHeader =
         (res.headers?.['x-total-count'] ?? res.headers?.['X-Total-Count']) as string | undefined
       const total = totalHeader ? Number(totalHeader) : revived.length
@@ -109,10 +146,46 @@ export const useNewsListStore = defineStore('newsList', {
     },
 
     // commentpart didt work in mainpage form design but it look good dont want to get rid of it
-    addComment(newsId: number, payload: Omit<Comment,'id'|'newsId'|'commentDateTime'>) {
-      const n = this.list.find(x => x.id === newsId); if (!n) return
-      const nextId = Math.max(0, ...n.comments.map(c => c.id)) + 1
-      n.comments.push({ id: nextId, newsId, commentDateTime: new Date(), ...payload })
+    // addComment(newsId: number, payload: Omit<Comment,'id'|'newsId'|'commentDateTime'>) {
+    //   const n = this.list.find(x => x.id === newsId); if (!n) return
+    //   const nextId = Math.max(0, ...n.comments.map(c => c.id)) + 1
+    //   n.comments.push({ id: nextId, newsId, commentDateTime: new Date(), ...payload })
+    // },
+
+    addComment(newsId: number, input: Partial<Comment>) {
+      const news = this.getById(newsId)
+      if (!news) return null
+
+      // create temp comment
+      const temp = makeTempComment(newsId, input)
+
+      // push to related news’ comments
+      news.comments.push(temp)
+
+      // ✅ update counts
+      if (temp.voteType === 'fake') {
+        news.fakeCount++
+      } else {
+        news.notFakeCount++
+      }
+
+      // ✅ recompute voteType
+      news.voteType = computeVoteType(news.fakeCount, news.notFakeCount)
+
+      return temp
+    }, 
+    voteFake(newsId: number) {
+      const news = this.getById(newsId)
+      if (!news) return
+      news.fakeCount++
+      news.voteType = computeVoteType(news.fakeCount, news.notFakeCount)
     },
+
+    voteNotFake(newsId: number) {
+      const news = this.getById(newsId)
+      if (!news) return
+      news.notFakeCount++
+      news.voteType = computeVoteType(news.fakeCount, news.notFakeCount)
+    }
   },
 })
