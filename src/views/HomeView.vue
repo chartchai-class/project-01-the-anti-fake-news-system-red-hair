@@ -19,7 +19,7 @@ async function load() {
   loading.value = true
   err.value = null
   try {
-    await store.fetchList({ status: status.value, page: page.value, pageSize: pageSize.value })
+    await store.fetchOverallTotal({ status: status.value, page: page.value, pageSize: pageSize.value })
   } catch (e: any) {
     console.error(e); err.value = e?.message ?? 'Load failed'
   } finally {
