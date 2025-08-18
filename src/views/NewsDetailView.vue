@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { News } from '@/types'
 import NewsServices from '@/services/NewsServices'
@@ -7,7 +7,7 @@ import CommentListView from '@/views/CommentListView.vue'
 import { useNewsListStore } from '@/stores/news'
 const route = useRoute()
 const router = useRouter()
-
+const childSection = ref<HTMLElement | null>(null)
 const newsStore = useNewsListStore()
 const news = ref<News | null>(null)
 const loading = ref(false)
@@ -51,11 +51,18 @@ function goHome() {
   router.push({ name: 'home' })
 }
 
-// navigation for vote & comment pages
-
-function goVoteAndCommentPage() {
-  router.push({ name: 'vote-and-comment', params: { id: news.value?.id } });
-}
+// whenever route changes to a child, scroll into view
+watch(
+  () => route.fullPath,
+  (newPath) => {
+    if (newPath.includes('/comments') || newPath.includes('/comment')) {
+      // wait a tick to let content render
+      requestAnimationFrame(() => {
+        childSection.value?.scrollIntoView({ behavior: 'smooth' })
+      })
+    }
+  }
+)
 
 onMounted(loadNews)
 </script>
@@ -95,12 +102,12 @@ onMounted(loadNews)
 
         <!-- Show Comments and Vote & Comment Buttons -->
         <div class="flex items-center justify-between gap-4 text-sm text-gray-600 mb-4">
-          <div class="flex flex-col gap-2">
+          <RouterLink :to="{ name: 'news-comments', params: { id: news.id } }">
             <button @click="showComments = true" 
             class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]">
                   Show Comments ({{ news.comments.length }})
             </button>
-          </div>
+          </RouterLink>
           <div class="flex flex-col gap-2">
             <RouterLink :to="{ name: 'post-comment', params: { id: news.id } }">
               <button class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]">
@@ -113,7 +120,10 @@ onMounted(loadNews)
     </div>
 
     <!-- comment modal -->
-    <CommentListView v-if="news" :comments="news.comments" :show="showComments" @close="showComments = false"/>
+    <!-- <CommentListView v-if="news" :comments="news.comments" :show="showComments" @close="showComments = false"/> -->
+    <div ref="childSection">
+      <router-view />
+    </div>
   </div>
 </template>
 

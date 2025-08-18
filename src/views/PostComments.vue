@@ -69,43 +69,37 @@ function clearForm() {
     @confirm="onModalConfirm"
     @close="alterShow = false"
   />
+    <div class="container mx-auto px-4 py-6">
+        <h2 class="text-2xl font-semibold mb-4 text-center">Vote & Comment</h2>
+        <div class="form flex flex-col max-w-md mx-auto p-4 border rounded shadow">
 
-    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-neutral-300 flex flex-col">
-        <RouterLink :to="{ name: 'home' }" class="self-start">
-        <button class="bg-black text-white px-3 py-1 rounded hover:bg-[#720000] ml-4 mt-6 mb-4 shadow">Back</button>
-        </RouterLink>
-
-        <div class="flex flex-col items-center justify-center flex-1">
-            <div class="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
-                <h2 class="text-2xl font-bold text-center mb-6 text-black">Vote & Comment</h2>
-
-                <form @submit.prevent="postComment" class="space-y-5">
+            <form @submit.prevent="postComment" class="space-y-5">
                 
                 <!-- Vote Buttons -->
                 <div class="flex justify-center gap-4">
                     <button
-                    type="button"
-                    @click="voteType = 'fake'"
-                    :class="[
-                        'px-4 py-2 rounded-lg font-bold shadow transition',
-                        voteType === 'fake'
-                        ? 'bg-red-600 text-white'
-                        : 'bg-red-100 text-red-600 hover:bg-red-200'
-                    ]"
-                    >
-                    Fake
+                        type="button"
+                        @click="voteType = 'fake'"
+                        :class="[
+                            'px-4 py-2 rounded-lg font-bold shadow transition',
+                            voteType === 'fake'
+                            ? 'bg-red-600 text-white'
+                            : 'bg-red-100 text-red-600 hover:bg-red-200'
+                        ]"
+                        >
+                        Fake
                     </button>
                     <button
-                    type="button"
-                    @click="voteType = 'not-fake'"
-                    :class="[
-                        'px-4 py-2 rounded-lg font-bold shadow transition',
-                        voteType === 'not-fake'
-                        ? 'bg-green-600 text-white'
-                        : 'bg-green-100 text-green-600 hover:bg-green-200'
-                    ]"
-                    >
-                    Not-Fake
+                        type="button"
+                        @click="voteType = 'not-fake'"
+                        :class="[
+                            'px-4 py-2 rounded-lg font-bold shadow transition',
+                            voteType === 'not-fake'
+                            ? 'bg-green-600 text-white'
+                            : 'bg-green-100 text-green-600 hover:bg-green-200'
+                        ]"
+                        >
+                        Not-Fake
                     </button>
                 </div>
 
@@ -138,8 +132,7 @@ function clearForm() {
                     class="w-full bg-black text-white py-2 rounded-lg font-bold hover:bg-[#720000] transition shadow">
                     Post Comment
                 </button>
-                </form>
-            </div>
+            </form>
         </div>
     </div>
 </template>

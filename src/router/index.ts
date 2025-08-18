@@ -28,19 +28,21 @@ const router = createRouter({
       path: '/news/:id',
       name: 'news-detail',
       component: () => import('@/views/NewsDetailView.vue'),
-      props: true
-    },
-    {
-      path: '/news/:id/comments',
-      name: 'news-comments',
-      component: () => import('@/views/CommentListView.vue'),
-      props: true
-    },
-    {
-      path: '/news/:id/comment',
-      name: 'post-comment',
-      component: () => import('@/views/PostComments.vue'),
-      props: route => ({ newsId: Number(route.params.id) })
+      props: true,
+      children: [
+        {
+          path: 'comments',
+          name: 'news-comments',
+          component: () => import('@/views/CommentListView.vue'),
+          props: true
+        },
+        {
+          path: 'comment',
+          name: 'post-comment',
+          component: () => import('@/views/PostComments.vue'),
+          props: route => ({ newsId: Number(route.params.id) })
+        }
+      ]
     }
   ],
 })
