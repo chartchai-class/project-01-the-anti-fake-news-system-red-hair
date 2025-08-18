@@ -1,17 +1,41 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { News } from '@/types'
 defineProps<{ item: News }>()
+
+const imgLoaded = ref(false)
+const imgError  = ref(false)
 </script>
 
 <template>
   <article class="rounded-xl border bg-white overflow-hidden shadow-sm">
-    <img v-if="item.image"
-         :src="item.image"
-         class="w-full h-48 object-cover"
-         alt=""
-         loading="lazy"
-         referrerpolicy="no-referrer"
-         @error="($event.target as HTMLImageElement).style.display='none'"/>
+    <!-- img + skeleton/placeholder -->
+    <div class="relative w-full h-48 bg-gray-100 overflow-hidden">
+      <!-- realimg -->
+      <img
+        v-if="item.image && !imgError"
+        :src="item.image"
+        class="absolute inset-0 w-full h-full object-cover"
+        alt=""
+        loading="lazy"
+        referrerpolicy="no-referrer"
+        @load="imgLoaded = true"
+        @error="imgError = true"
+      />
+      <!-- spookie skeleton 💀💀💀  -->
+      <div
+        v-if="!imgLoaded && !imgError && item.image"
+        class="absolute inset-0 animate-pulse bg-gray-200"
+      />
+      <!-- placeholder when no pic or pic broke -->
+      <img
+        v-else-if="imgError || !item.image"
+        src="https://placehold.co/900x480?text=No+Image"
+        class="absolute inset-0 w-full h-full object-cover"
+        alt=""
+      />
+    </div>
+
     <div class="p-4">
       <div class="flex items-center justify-between text-xs mb-1">
         <span class="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">{{ item.category }}</span>
