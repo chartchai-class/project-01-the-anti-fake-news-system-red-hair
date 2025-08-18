@@ -22,6 +22,24 @@ function revive(n: any): News {
   }
 }
 
+function makeTempNews(input: Partial<News>): News{
+  const id = -(Date.now())
+  return{
+    id: id,
+    title: input.title ?? 'Newly Added News',
+    category: input.category ?? 'General',
+    reporter: input.reporter ?? 'Anonymous',
+    newsDateTime: new Date(),
+    description: input.description ?? '',
+    content: input.content ?? '',
+    image: input.image || 'https://i.pinimg.com/1200x/e7/f6/5b/e7f65bb7011717f5c09d900866fdff4a.jpg', //just hamster image xD
+    fakeCount: 0,
+    notFakeCount: 1,
+    voteType: 'not-fake',
+    comments: []
+  }
+}
+
 type State = {
   list: News[]
   total: number
@@ -40,19 +58,27 @@ export const useNewsListStore = defineStore('newsList', {
     async fetchList({ status='all' as 'all'|voteType, page=1, pageSize=12 } = {}) {
       const res = await NewsServices.getNewsByPage(page, pageSize, status)
       const revived = (res.data as any[]).map(revive)
+      const tempItems = this.list.filter(n => n.id < 0)
 
       const totalHeader =
         (res.headers?.['x-total-count'] ?? res.headers?.['X-Total-Count']) as string | undefined
       const total = totalHeader ? Number(totalHeader) : revived.length
 
-      this.list = revived
-      this.total = Number.isFinite(total) ? total : revived.length
+      this.list = [...tempItems, ...revived] //Im facing problem here for pagination :") Welp -- perPage only counts for serverFetched file,
+      this.total = (Number.isFinite(total) ? total : revived.length) + tempItems.length
       this.loaded = true
     },
 
     async fetchOne(id: number) {
       const { data } = await NewsServices.getNewsById(id)
       return revive(data) // ใช้ค่าจาก DB ตรง ๆ
+    },
+
+    addNews(input: Partial<News>) {
+      const temp = makeTempNews(input)
+      this.list.unshift(temp)
+      this.total = (this.total ?? 0) + 1
+      return temp
     },
 
     // commentpart didt work in mainpage form design but it look good dont want to get rid of it

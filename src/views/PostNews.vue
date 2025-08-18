@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useTempNewsStore } from '@/stores/tempNews';
+import { useNewsListStore } from '@/stores/news';
 import { ref } from 'vue';
+import { RouterLink, useRouter } from 'vue-router';
 
-const tempNewsStore = useTempNewsStore();
+const newsListStore = useNewsListStore();
 
 const title = ref('');
 const category = ref('General');
@@ -10,12 +11,13 @@ const reporter = ref('Anonymous');
 const description = ref('');
 const content = ref('');
 const image = ref('');
+const router = useRouter();
 
 function postNews(){
     if( !title.value || !content.value ){
         return alert('Title and Content are required.');
     }
-    tempNewsStore.addNews({
+    newsListStore.addNews({
         title: title.value,
         category: category.value,
         reporter: reporter.value,
@@ -25,6 +27,7 @@ function postNews(){
     })
     clearForm();
     alert('News posted successfully!');
+    router.push({ name: 'home' });
 }
 
 function clearForm(){
@@ -38,49 +41,63 @@ function clearForm(){
 
 </script>
 
-<!-- i will update style later :") " -->
 <template>
-    <RouterLink :to="{ name: 'home' }">
-        <button class="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 ml-4 mt-2">Back</button>
-    </RouterLink>
-    <h1 class="text-2xl text-center font-bold mb-4 py-4">Post News</h1>
-    <div class="form flex flex-col max-w-md mx-auto p-4 border rounded shadow">
+    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-neutral-300 flex flex-col">
+        <RouterLink :to="{ name: 'home' }" class="self-start">
+            <button class="bg-black text-white px-3 py-1 rounded hover:bg-[#720000] ml-4 mt-6 mb-4 shadow">Back</button>
+        </RouterLink>
+        <div class="flex flex-col items-center justify-center flex-1">
+            <div class="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+                <h1 class="text-3xl font-bold text-center mb-6 text-black">Post News</h1>
+                <form @submit.prevent="postNews" class="space-y-5">
 
-        <div class="mb-4">
-            <label class="block mb-2">Title</label>
-            <input v-model="title" type="text" placeholder="Enter title" class="w-full p-2 border rounded" />
-        </div>
+                <div>
+                    <label class="block mb-2 font-semibold text-gray-700">Title</label>
+                    <input v-model="title" type="text" placeholder="Enter title"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 transition" />
+                </div>
 
-        <div class="mb-4">
-            <label class="block mb-2">Category</label>
-            <select v-model="category" class="w-full p-2 border rounded">
-                <option value="General">General</option>
-                <option value="Politics">Politics</option>
-                <option value="Sports">Sports</option>
-                <option value="Entertainment">Entertainment</option>
-                <option value="Technology">Technology</option>
-                <option value="Health">Health</option>
-            </select>
-        </div>
+                <div>
+                    <label class="block mb-2 font-semibold text-gray-700">Category</label>
+                    <select v-model="category"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 transition">
+                    <option value="General">General</option>
+                    <option value="Politics">Politics</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Health">Health</option>
+                    </select>
+                </div>
 
-        <div class="mb-4">
-            <label class="block mb-2">Reporter</label>
-            <input v-model="reporter" type="text" class="w-full p-2 border rounded" />
-        </div>
+                <div>
+                    <label class="block mb-2 font-semibold text-gray-700">Reporter</label>
+                    <input v-model="reporter" type="text"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 transition" />
+                </div>
 
-        <div class="mb-4">
-            <label class="block mb-2">Description</label>
-            <textarea v-model="description" placeholder="Enter short description..." rows="2" class="w-full p-2 border rounded"></textarea>
-        </div>
+                <div>
+                    <label class="block mb-2 font-semibold text-gray-700">Description</label>
+                    <textarea v-model="description" placeholder="Enter short description..." rows="2"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 transition"></textarea>
+                </div>
 
-        <div class="mb-4">
-            <label class="block mb-2">Content</label>
-            <textarea v-model="content" placeholder="Enter content..." rows="5" class="w-full p-2 border rounded"></textarea>
+                <div>
+                    <label class="block mb-2 font-semibold text-gray-700">Content</label>
+                    <textarea v-model="content" placeholder="Enter content..." rows="4"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 transition"></textarea>
+                </div>
+
+                <div>
+                    <label class="block mb-2 font-semibold text-gray-700">Image URL</label>
+                    <input v-model="image" type="text" placeholder="Enter image URL"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-2S00 transition" />
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-black text-white py-3 rounded-lg font-bold text-lg hover:bg-[#720000] transition shadow">Post</button>
+                </form>
+            </div>
         </div>
-        <div class="mb-4">
-            <label class="block mb-2">Image URL</label>
-            <input v-model="image" type="text" placeholder="Enter image URL" class="w-full p-2 border rounded" />
-        </div>
-        <button @click="postNews" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Post</button>
     </div>
 </template>
