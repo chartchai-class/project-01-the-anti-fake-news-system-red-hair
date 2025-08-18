@@ -4,10 +4,8 @@ import { useNewsListStore } from '@/stores/news'
 import FilterBar from '@/components/FilterBar.vue'
 import Pagination from '@/components/Pagination.vue'
 import NewsCard from '@/components/NewsCard.vue'
-import { useTempNewsStore } from '@/stores/tempNews'
 
 const store = useNewsListStore()
-const tempStore = useTempNewsStore()  
 
 const status = ref<'all'|'fake'|'not-fake'>('all')
 const page = ref(1)
@@ -38,7 +36,16 @@ watch(page, load)
 
 <template>
   <div class="container mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold mb-4">News List</h1>
+    <div class="flex justify-between items-center">
+      <h1 class="text-2xl font-bold mb-4">News List</h1>
+      <!-- Post-News button is appearing in navbar all the time and is moved to homeView only -->
+      <RouterLink
+        :to="{ name: 'post-news' }"
+        class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]"
+      >
+        <span class="text-lg leading-none">＋</span> Add News
+      </RouterLink>
+    </div>
 
     <FilterBar v-model:status="status" v-model:pageSize="pageSize" />
 
@@ -46,7 +53,6 @@ watch(page, load)
     <div v-else-if="loading" class="p-6 text-gray-500">Loading…</div>
 
     <div v-else class="grid md:grid-cols-3 gap-4">
-      <NewsCard v-for="n in tempStore.list" :key="'temp-' + n.id" :item="n" />
       <NewsCard v-for="n in store.list" :key="n.id" :item="n" />
     </div>
 
