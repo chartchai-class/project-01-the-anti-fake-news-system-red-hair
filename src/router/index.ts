@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import PostNews from '@/views/PostNews.vue'
 import PostComments from '@/views/PostComments.vue'
+import nProgress from 'nprogress'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +46,13 @@ const router = createRouter({
       ]
     }
   ],
+})
+
+router.beforeEach(()=>{
+  nProgress.start()
+})
+router.afterEach(()=>{
+  nProgress.done()
 })
 
 export default router

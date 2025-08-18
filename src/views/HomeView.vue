@@ -4,6 +4,7 @@ import { useNewsListStore } from '@/stores/news'
 import FilterBar from '@/components/FilterBar.vue'
 import Pagination from '@/components/Pagination.vue'
 import NewsCard from '@/components/NewsCard.vue'
+import LoadingCircle from '@/components/LoadingCircle.vue'
 
 const store = useNewsListStore()
 
@@ -50,7 +51,9 @@ watch(page, load)
     <FilterBar v-model:status="status" v-model:pageSize="pageSize" />
 
     <div v-if="err" class="p-4 text-red-600">Error: {{ err }}</div>
-    <div v-else-if="loading" class="p-6 text-gray-500">Loading…</div>
+    <div v-else-if="loading" class="p-6 text-gray-500 m-10 flex justify-center items-center">
+      <LoadingCircle />
+    </div>
 
     <div v-else class="grid md:grid-cols-3 gap-4">
       <NewsCard v-for="n in store.list" :key="n.id" :item="n" />
