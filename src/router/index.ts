@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import PostNews from '@/views/PostNews.vue'
+import PostComments from '@/views/PostComments.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +35,12 @@ const router = createRouter({
       name: 'news-comments',
       component: () => import('@/views/CommentListView.vue'),
       props: true
+    },
+    {
+      path: '/news/:id/comment',
+      name: 'post-comment',
+      component: () => import('@/views/PostComments.vue'),
+      props: route => ({ newsId: Number(route.params.id) })
     }
   ],
 })

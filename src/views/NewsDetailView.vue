@@ -95,17 +95,19 @@ onMounted(loadNews)
 
         <!-- Show Comments and Vote & Comment Buttons -->
         <div class="flex items-center justify-between gap-4 text-sm text-gray-600 mb-4">
-            <div class="flex flex-col gap-2">
-              <button @click="showComments = true" 
-              class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-                    Show Comments ({{ news.comments.length }})
+          <div class="flex flex-col gap-2">
+            <button @click="showComments = true" 
+            class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                  Show Comments ({{ news.comments.length }})
+            </button>
+          </div>
+          <div class="flex flex-col gap-2">
+            <RouterLink :to="{ name: 'post-comment', params: { id: news.id } }">
+              <button class="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+                Add Comment
               </button>
-            </div>
-            <div class="flex flex-col gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-                <button @click="goVoteAndCommentPage">
-                    Vote & Comment
-                </button>
-            </div>
+            </RouterLink>
+          </div>
         </div>
       </div>
     </div>
