@@ -2,6 +2,7 @@
 import { useNewsListStore } from '@/stores/news';
 import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
+import AlterBox from '@/components/AlterBox.vue';
 
 const newsListStore = useNewsListStore();
 
@@ -13,9 +14,20 @@ const content = ref('');
 const image = ref('');
 const router = useRouter();
 
+const alterShow = ref(false);
+const alterMessage = ref('');
+const alertTitle = ref('Notification');
+const alertType = ref('success');
+
 function postNews(){
+    if(alterShow.value) return;
+
     if( !title.value || !content.value ){
-        return alert('Title and Content are required.');
+        alertTitle.value = 'Failed';
+        alterMessage.value = 'Title and Content are required.';
+        alterShow.value = true;
+        alertType.value = 'error';
+        return;
     }
     newsListStore.addNews({
         title: title.value,
@@ -26,8 +38,18 @@ function postNews(){
         image: image.value
     })
     clearForm();
-    alert('News posted successfully!');
-    router.push({ name: 'home' });
+
+    alertTitle.value = 'Posted';
+    alterMessage.value = 'News posted successfully!';
+    alterShow.value = true;
+    alertType.value = 'success';
+}
+
+function onModalConfirm(){
+    alterShow.value = false;
+    if(alertType.value === 'success') {
+        router.push({ name: 'home' });
+    }
 }
 
 function clearForm(){
@@ -42,6 +64,15 @@ function clearForm(){
 </script>
 
 <template>
+    <AlterBox
+        :show="alterShow"
+        :title="alertTitle"
+        :message="alterMessage"
+        :type="alertType"
+        confirmText="OK"
+        @confirm="onModalConfirm"
+        @close="alterShow = false"
+    />
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-neutral-300 flex flex-col">
         <RouterLink :to="{ name: 'home' }" class="self-start">
             <button class="bg-black text-white px-3 py-1 rounded hover:bg-[#720000] ml-4 mt-6 mb-4 shadow">Back</button>
