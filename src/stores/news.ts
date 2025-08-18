@@ -42,12 +42,16 @@ function makeTempNews(input: Partial<News>): News{
 
 type State = {
   list: News[]
+  serverList: News[]
+  tempList: News[]
   total: number
+  serverTotal: number
+  tempTotal: number
   loaded: boolean
 }
 // Pinia store: news list + pagination helpers.
 export const useNewsListStore = defineStore('newsList', {
-  state: (): State => ({ list: [], total: 0, loaded: false }),
+  state: (): State => ({ list: [], serverList: [], tempList: [], total: 0, serverTotal: 0, tempTotal: 0, loaded: false }),
 
   getters: {
     getById: (s) => (id: number) => s.list.find(n => n.id === id) ?? null,
@@ -58,14 +62,13 @@ export const useNewsListStore = defineStore('newsList', {
     async fetchList({ status='all' as 'all'|voteType, page=1, pageSize=12 } = {}) {
       const res = await NewsServices.getNewsByPage(page, pageSize, status)
       const revived = (res.data as any[]).map(revive)
-      const tempItems = this.list.filter(n => n.id < 0)
 
       const totalHeader =
         (res.headers?.['x-total-count'] ?? res.headers?.['X-Total-Count']) as string | undefined
       const total = totalHeader ? Number(totalHeader) : revived.length
 
-      this.list = [...tempItems, ...revived] //Im facing problem here for pagination :") Welp -- perPage only counts for serverFetched file,
-      this.total = (Number.isFinite(total) ? total : revived.length) + tempItems.length
+      this.serverList = revived
+      this.serverTotal = (Number.isFinite(total) ? total : revived.length)
       this.loaded = true
     },
 
@@ -74,10 +77,22 @@ export const useNewsListStore = defineStore('newsList', {
       return revive(data) // ใช้ค่าจาก DB ตรง ๆ
     },
 
+    // Pls dont read with tears -- I somehow messed up your code and fetch from here
+    // fetch both server data + temp news data
+    async fetchOverallTotal({status='all' as 'all'|voteType, page =1, pageSize=12} = {}) {
+      await this.fetchList({ status, page, pageSize })
+      this.total = this.serverTotal + this.tempTotal
+      // Calculate start index for tempList items on the current page
+      const tempStart = Math.max(0, (page - 1) * pageSize - this.serverTotal)
+      const tempItems = tempStart >= 0 ? this.tempList.slice(tempStart, tempStart + pageSize - this.serverList.length) : []
+
+      this.list = [...this.serverList, ...tempItems]
+    },
+
     addNews(input: Partial<News>) {
       const temp = makeTempNews(input)
-      this.list.unshift(temp)
-      this.total = (this.total ?? 0) + 1
+      this.tempList.push(temp)
+      this.tempTotal++
       return temp
     },
 
