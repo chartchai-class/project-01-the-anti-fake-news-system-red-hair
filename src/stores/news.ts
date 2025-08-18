@@ -54,7 +54,19 @@ export const useNewsListStore = defineStore('newsList', {
   state: (): State => ({ list: [], serverList: [], tempList: [], total: 0, serverTotal: 0, tempTotal: 0, loaded: false }),
 
   getters: {
-    getById: (s) => (id: number) => s.list.find(n => n.id === id) ?? null,
+    getById: (s) => (id: number) => {
+      // First check the current combined list
+      const fromList = s.list.find(n => n.id === id)
+      if (fromList) return fromList
+      
+      // Then check temp list for negative IDs
+      if (id < 0) {
+        return s.tempList.find(n => n.id === id) ?? null
+      }
+      
+      // Finally check server list for positive IDs
+      return s.serverList.find(n => n.id === id) ?? null
+    },
   },
 
   actions: {
