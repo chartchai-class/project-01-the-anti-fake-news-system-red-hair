@@ -64,7 +64,7 @@ export const useNewsListStore = defineStore('newsList', {
         (res.headers?.['x-total-count'] ?? res.headers?.['X-Total-Count']) as string | undefined
       const total = totalHeader ? Number(totalHeader) : revived.length
 
-      this.list = [...tempItems, ...revived]
+      this.list = [...tempItems, ...revived] //Im facing problem here for pagination :") Welp -- perPage only counts for serverFetched file,
       this.total = (Number.isFinite(total) ? total : revived.length) + tempItems.length
       this.loaded = true
     },
