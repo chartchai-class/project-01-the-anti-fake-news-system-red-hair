@@ -6,7 +6,7 @@ defineProps<{
 </script>
 
 <template>
-    <div class="form flex flex-col max-w-md mx-auto p-4 border rounded shadow">
+  <div class="form flex flex-col max-w-xl mx-auto p-4 border rounded-xl shadow bg-white my-1">
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between text-sm text-gray-500 mb-2">
       <span class="font-bold text-gray-800">{{ comment.author }}</span>
       <span class="text-xs sm:text-sm mt-1 sm:mt-0">
@@ -21,7 +21,7 @@ defineProps<{
       </span>
     </div>
     <img v-if="comment.image" :src="comment.image" alt="Vote image"
-      class="mt-2 rounded-lg object-cover w-full h-auto max-h-48"
+      class="mt-2 rounded-lg object-cover w-full h-auto max-h-60"
       loading="lazy"
       referrerpolicy="no-referrer"
       @error="($event.target as HTMLImageElement).style.display='none'" />

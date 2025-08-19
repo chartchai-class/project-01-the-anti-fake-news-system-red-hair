@@ -38,7 +38,7 @@ watch(page, load)
 <template>
   <div class="container mx-auto px-4 py-6">
     <div class="flex justify-between items-center">
-      <h1 class="text-2xl font-bold mb-4">News List</h1>
+      <h1 class="text-2xl font-bold mb-4"><span class="text-[#AB0000]">N</span>EWS LIST</h1>
       <!-- Post-News button is appearing in navbar all the time and is moved to homeView only -->
       <RouterLink
         :to="{ name: 'post-news' }"
@@ -59,6 +59,6 @@ watch(page, load)
       <NewsCard v-for="n in store.list" :key="n.id" :item="n" />
     </div>
 
-    <Pagination :total="store.total" v-model:page="page" :pageSize="pageSize" />
+    <Pagination :total="store.total" v-model:page="page" :pageSize="pageSize" class="my-5"/>
   </div>
 </template>
