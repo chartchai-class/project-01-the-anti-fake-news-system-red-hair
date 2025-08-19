@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import PostNews from '@/views/PostNews.vue'
-import nProgress from 'nprogress'
+import nProgress from 'nProgress'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,13 +28,21 @@ const router = createRouter({
       path: '/news/:id',
       name: 'news-detail',
       component: () => import('@/views/NewsDetailView.vue'),
-      props: true
-    },
-    {
-      path: '/news/:id/comments',
-      name: 'news-comments',
-      component: () => import('@/views/CommentListView.vue'),
-      props: true
+      props: true,
+      children: [
+        {
+          path: 'comments',
+          name: 'news-comments',
+          component: () => import('@/views/CommentListView.vue'),
+          props: true
+        },
+        {
+          path: 'comment',
+          name: 'post-comment',
+          component: () => import('@/views/PostComments.vue'),
+          props: route => ({ newsId: Number(route.params.id) })
+        }
+      ]
     }
   ],
 })

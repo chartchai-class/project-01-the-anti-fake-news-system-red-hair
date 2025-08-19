@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // repo URL donot contain /new
-const BASE = 'https://my-json-server.typicode.com/sawroryyin/331-02d/'
+const BASE = 'https://cbsd-news-mock-production.up.railway.app'
 
 
 // Shared axios instance
