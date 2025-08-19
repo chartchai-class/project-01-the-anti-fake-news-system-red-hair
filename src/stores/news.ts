@@ -139,14 +139,17 @@ export const useNewsListStore = defineStore('newsList', {
     // Pls dont read with tears -- I somehow messed up your code and fetch from here
     // fetch both server data + temp news data
     async fetchOverallTotal({ status = 'all' as 'all' | voteType, page = 1, pageSize = 12 } = {}) {
-      await this.fetchList({ status: 'all', page, pageSize })
+      // await this.fetchList({ status: 'all', page, pageSize })
+      
+      // 1. Fetch the entire server list without pagination first
+      await this.fetchList({ status: 'all', page: 1, pageSize: 9999 }); // Fetch all server news
 
       // filter temp by current status before combining
       // const tempFiltered = status === 'all' ? this.tempList : this.tempList.filter(n => n.voteType === status)
       // this.tempTotal = tempFiltered.length
       // this.total = this.serverTotal + this.tempTotal
 
-      // Apply local updates to the server-fetched list
+      // 2. Apply local updates to the full server list
       const serverListWithUpdates = this.serverList.map(n => {
         const localUpdate = this.localUpdates[n.id];
         if (localUpdate) {
@@ -160,33 +163,27 @@ export const useNewsListStore = defineStore('newsList', {
         return n;
       });
 
-      // Filter the server data based on the status, after applying local updates
-      const serverFiltered = status === 'all'
-        ? serverListWithUpdates
-        : serverListWithUpdates.filter(n => n.voteType === status);
+      // 3. Combine server and temporary lists into a single list
+      // Temporary news should always be newer, so place them at the start of the list.
+      const combinedList = [...this.tempList, ...serverListWithUpdates];
 
-        const tempFiltered = status === 'all' ? this.tempList : this.tempList.filter(n => n.voteType === status);
+      // 4. Filter the combined list based on the selected status
+      const filteredList = status === 'all'
+      ? combinedList
+      : combinedList.filter(n => n.voteType === status);
 
-      // Recompute totals and combine lists
-      this.serverTotal = serverListWithUpdates.length; // Use the length of the *unfiltered* server list for accurate pagination
-      this.tempTotal = tempFiltered.length;
-      this.total = this.serverTotal + this.tempTotal;
+      // 5. Calculate total count based on the filtered list
+      this.total = filteredList.length;
 
-      // // how many slots remain on this page after server items
-      // const remainingSlots = Math.max(0, pageSize - this.serverList.length)
-      // // offset for temp items if server already filled previous pages
-      // const offset = Math.max(0, (page - 1) * pageSize - this.serverTotal)
-      // const tempItems = remainingSlots > 0 ? tempFiltered.slice(offset, offset + remainingSlots) : []
+      // 6. Apply pagination to the filtered list
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
 
-      // // combine: server first, then temp for this page
-      // this.list = [...this.serverList, ...tempItems]
+      this.list = filteredList.slice(startIndex, endIndex);
 
-      const remainingSlots = Math.max(0, pageSize - serverFiltered.length);
-      const offset = Math.max(0, (page - 1) * pageSize - this.serverTotal);
-      const tempItems = remainingSlots > 0 ? tempFiltered.slice(offset, offset + remainingSlots) : [];
-
-      // combine: filtered server list first, then temp for this page
-      this.list = [...serverFiltered, ...tempItems];
+      // Update the separate totals for display purposes
+      this.serverTotal = serverListWithUpdates.length;
+      this.tempTotal = this.tempList.length;
     },
 
     addNews(input: Partial<News>) {

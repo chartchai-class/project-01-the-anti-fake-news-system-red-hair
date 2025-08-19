@@ -3,7 +3,6 @@ import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { News } from '@/types'
 import NewsServices from '@/services/NewsServices'
-import CommentListView from '@/views/CommentListView.vue'
 import { useNewsListStore } from '@/stores/news'
 const route = useRoute()
 const router = useRouter()
