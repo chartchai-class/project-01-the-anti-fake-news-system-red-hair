@@ -58,6 +58,15 @@ function makeTempComment(newsId: number, input: Partial<Comment>): Comment {
   }
 }
 
+// new type
+type LocalUpdates = {
+  [newsId: number]: {
+    fakeCount: number;
+    notFakeCount: number;
+  };
+};
+
+
 type State = {
   list: News[]
   serverList: News[]
@@ -66,10 +75,11 @@ type State = {
   serverTotal: number
   tempTotal: number
   loaded: boolean
+  localUpdates: LocalUpdates
 }
 // Pinia store: news list + pagination helpers.
 export const useNewsListStore = defineStore('newsList', {
-  state: (): State => ({ list: [], serverList: [], tempList: [], total: 0, serverTotal: 0, tempTotal: 0, loaded: false }),
+  state: (): State => ({ list: [], serverList: [], tempList: [], total: 0, serverTotal: 0, tempTotal: 0, loaded: false, localUpdates: {} }),
 
   getters: {
     getById: (s) => (id: number) => {
@@ -129,21 +139,54 @@ export const useNewsListStore = defineStore('newsList', {
     // Pls dont read with tears -- I somehow messed up your code and fetch from here
     // fetch both server data + temp news data
     async fetchOverallTotal({ status = 'all' as 'all' | voteType, page = 1, pageSize = 12 } = {}) {
-      await this.fetchList({ status, page, pageSize })
+      await this.fetchList({ status: 'all', page, pageSize })
 
       // filter temp by current status before combining
-      const tempFiltered = status === 'all' ? this.tempList : this.tempList.filter(n => n.voteType === status)
-      this.tempTotal = tempFiltered.length
-      this.total = this.serverTotal + this.tempTotal
+      // const tempFiltered = status === 'all' ? this.tempList : this.tempList.filter(n => n.voteType === status)
+      // this.tempTotal = tempFiltered.length
+      // this.total = this.serverTotal + this.tempTotal
 
-      // how many slots remain on this page after server items
-      const remainingSlots = Math.max(0, pageSize - this.serverList.length)
-      // offset for temp items if server already filled previous pages
-      const offset = Math.max(0, (page - 1) * pageSize - this.serverTotal)
-      const tempItems = remainingSlots > 0 ? tempFiltered.slice(offset, offset + remainingSlots) : []
+      // Apply local updates to the server-fetched list
+      const serverListWithUpdates = this.serverList.map(n => {
+        const localUpdate = this.localUpdates[n.id];
+        if (localUpdate) {
+          return {
+            ...n,
+            fakeCount: localUpdate.fakeCount,
+            notFakeCount: localUpdate.notFakeCount,
+            voteType: computeVoteType(localUpdate.fakeCount, localUpdate.notFakeCount),
+          };
+        }
+        return n;
+      });
 
-      // combine: server first, then temp for this page
-      this.list = [...this.serverList, ...tempItems]
+      // Filter the server data based on the status, after applying local updates
+      const serverFiltered = status === 'all'
+        ? serverListWithUpdates
+        : serverListWithUpdates.filter(n => n.voteType === status);
+
+        const tempFiltered = status === 'all' ? this.tempList : this.tempList.filter(n => n.voteType === status);
+
+      // Recompute totals and combine lists
+      this.serverTotal = serverListWithUpdates.length; // Use the length of the *unfiltered* server list for accurate pagination
+      this.tempTotal = tempFiltered.length;
+      this.total = this.serverTotal + this.tempTotal;
+
+      // // how many slots remain on this page after server items
+      // const remainingSlots = Math.max(0, pageSize - this.serverList.length)
+      // // offset for temp items if server already filled previous pages
+      // const offset = Math.max(0, (page - 1) * pageSize - this.serverTotal)
+      // const tempItems = remainingSlots > 0 ? tempFiltered.slice(offset, offset + remainingSlots) : []
+
+      // // combine: server first, then temp for this page
+      // this.list = [...this.serverList, ...tempItems]
+
+      const remainingSlots = Math.max(0, pageSize - serverFiltered.length);
+      const offset = Math.max(0, (page - 1) * pageSize - this.serverTotal);
+      const tempItems = remainingSlots > 0 ? tempFiltered.slice(offset, offset + remainingSlots) : [];
+
+      // combine: filtered server list first, then temp for this page
+      this.list = [...serverFiltered, ...tempItems];
     },
 
     addNews(input: Partial<News>) {
@@ -179,7 +222,13 @@ export const useNewsListStore = defineStore('newsList', {
 
       // ✅ recompute voteType
       news.voteType = computeVoteType(news.fakeCount, news.notFakeCount)
-
+      // Persist local changes for server-side news
+      if (news.id > 0) {
+        this.localUpdates[news.id] = {
+          fakeCount: news.fakeCount,
+          notFakeCount: news.notFakeCount,
+        }
+      }
       return temp
     }, 
     voteFake(newsId: number) {
@@ -187,6 +236,14 @@ export const useNewsListStore = defineStore('newsList', {
       if (!news) return
       news.fakeCount++
       news.voteType = computeVoteType(news.fakeCount, news.notFakeCount)
+      
+      // Persist local changes for server-side news
+      if (news.id > 0) {
+        this.localUpdates[news.id] = {
+          fakeCount: news.fakeCount,
+          notFakeCount: news.notFakeCount,
+        }
+      }
     },
 
     voteNotFake(newsId: number) {
@@ -194,6 +251,13 @@ export const useNewsListStore = defineStore('newsList', {
       if (!news) return
       news.notFakeCount++
       news.voteType = computeVoteType(news.fakeCount, news.notFakeCount)
-    }
+      // Persist local changes for server-side news
+      if (news.id > 0) {
+        this.localUpdates[news.id] = {
+          fakeCount: news.fakeCount,
+          notFakeCount: news.notFakeCount,
+        }
+      }
+    },
   },
 })
