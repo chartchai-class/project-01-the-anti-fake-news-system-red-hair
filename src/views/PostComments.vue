@@ -38,18 +38,33 @@ function postComment() {
     return
   }
 
-  newsListStore.addComment(props.newsId, {
+  // Check if there is content or an image to post a full comment
+  const hasCommentContent = content.value.trim() !== '' || image.value.trim() !== '';
+
+  if (hasCommentContent){
+    //If there is content or an image
+    newsListStore.addComment(props.newsId, {
     author: author.value,
     content: content.value || '',
     image: image.value || '',
     voteType: voteType.value,
-  })
+    })
+    alertTitle.value = 'Posted'
+    alterMessage.value = 'Comment posted successfully!'
+    alertType.value = 'success'
+  } else {
+    // If there is no content or image, only update the vote count
+    if (voteType.value === 'fake') {
+      newsListStore.voteFake(props.newsId);
+    } else {
+      newsListStore.voteNotFake(props.newsId);
+    }
+    alertTitle.value = 'Voted'
+    alterMessage.value = 'Vote recorded successfully!'
+    alertType.value = 'success'
+  }
   clearForm()
-
-  alertTitle.value = 'Posted'
-  alterMessage.value = 'Comment posted successfully!'
   alterShow.value = true
-  alertType.value = 'success'
 }
 
 function onModalConfirm() {
