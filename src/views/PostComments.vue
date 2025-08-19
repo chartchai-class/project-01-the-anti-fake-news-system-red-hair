@@ -21,9 +21,18 @@ const alertType = ref<'success' | 'error'>('success')
 function postComment() {
   if (alterShow.value) return;
 
-  if (!content.value.trim()) {
+  if (!author.value.trim()) {
     alertTitle.value = 'Failed'
-    alterMessage.value = 'Content is required.'
+    alterMessage.value = 'Author is required.'
+    alterShow.value = true
+    alertType.value = 'error'
+    return
+  }
+
+  // Vote required
+  if (!voteType.value) {
+    alertTitle.value = 'Failed'
+    alterMessage.value = 'Please select a vote (Fake or Not-Fake).'
     alterShow.value = true
     alertType.value = 'error'
     return
@@ -31,8 +40,8 @@ function postComment() {
 
   newsListStore.addComment(props.newsId, {
     author: author.value,
-    content: content.value,
-    image: image.value,
+    content: content.value || '',
+    image: image.value || '',
     voteType: voteType.value,
   })
   clearForm()
