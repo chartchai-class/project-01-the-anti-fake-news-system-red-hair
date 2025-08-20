@@ -1,21 +1,30 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { News } from '@/types'
-defineProps<{ item: News }>()
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const props = defineProps<{ item: News }>()
 
 const imgLoaded = ref(false)
 const imgError  = ref(false)
+
+function goNewsDetail() {
+  router.push({ name: 'news-detail', params: { id: props.item.id } })
+}
 </script>
 
 <template>
-  <article class="rounded-xl border bg-white overflow-hidden shadow-sm">
+  <article class="rounded-xl border bg-white overflow-hidden shadow-md lg:mx-2 border-white">
     <!-- img + skeleton/placeholder -->
     <div class="relative w-full h-48 bg-gray-100 overflow-hidden">
       <!-- realimg -->
       <img
+        @click="goNewsDetail"
         v-if="item.image && !imgError"
         :src="item.image"
-        class="absolute inset-0 w-full h-full object-cover"
+        class="absolute inset-0 w-full h-full object-cover cursor-pointer"
         alt=""
         loading="lazy"
         referrerpolicy="no-referrer"
@@ -58,9 +67,9 @@ const imgError  = ref(false)
         <span>Not-fake: {{ item.notFakeCount }}</span>
       </div>
 
-      <router-link :to="`/news/${item.id}`" class="inline-block mt-3 text-blue-600 hover:underline">
+      <div class="inline-block mt-3 text-blue-600 hover:underline cursor-pointer" @click="goNewsDetail">
         Read more »
-      </router-link>
+      </div>
     </div>
   </article>
 </template>

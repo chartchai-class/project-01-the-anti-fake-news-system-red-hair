@@ -95,7 +95,7 @@ function clearForm() {
   />
     <div class="container mx-auto px-4 py-6">
         <h2 class="text-2xl font-semibold mb-4 text-center">Vote & Comment</h2>
-        <div class="form flex flex-col max-w-md mx-auto p-4 border rounded shadow">
+        <div class="form flex flex-col max-w-xl mx-auto p-4 border rounded-xl shadow bg-white">
 
             <form @submit.prevent="postComment" class="space-y-5">
                 

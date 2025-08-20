@@ -67,11 +67,11 @@ onMounted(loadNews)
 </script>
 
 <template>
+  <button @click="goHome" class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 mt-6 mb-4 shadow">Back</button>
   <div class="container mx-auto px-4 py-6">
-    <button @click="goHome" class="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 ml-4 mt-2">Back</button>
     <div v-if="err" class="text-red-600">{{ err }}</div>
     <div v-else-if="loading" class="text-gray-500">Loading…</div>
-    <div v-else-if="news" class="form flex flex-col max-w-md mx-auto p-4 border rounded shadow">
+    <div v-else-if="news" class="form flex flex-col max-w-3xl mx-auto p-4 border rounded-xl shadow bg-white">
       <div class="flex-1">
         <h1 class="text-2xl font-bold mb-2">{{ news.title }}</h1>
         <div class="text-sm text-gray-500 mb-4">
