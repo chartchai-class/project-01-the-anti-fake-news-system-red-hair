@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import PostNews from '@/views/PostNews.vue'
+import nProgress from 'nprogress'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,7 +19,39 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
     },
+    {
+      path:'/post-news',
+      name: 'post-news',
+      component: PostNews
+    },
+    {
+      path: '/news/:id',
+      name: 'news-detail',
+      component: () => import('@/views/NewsDetailView.vue'),
+      props: true,
+      children: [
+        {
+          path: 'comments',
+          name: 'news-comments',
+          component: () => import('@/views/CommentListView.vue'),
+          props: true
+        },
+        {
+          path: 'comment',
+          name: 'post-comment',
+          component: () => import('@/views/PostComments.vue'),
+          props: route => ({ newsId: Number(route.params.id) })
+        }
+      ]
+    }
   ],
+})
+
+router.beforeEach(()=>{
+  nProgress.start()
+})
+router.afterEach(()=>{
+  nProgress.done()
 })
 
 export default router
