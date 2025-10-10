@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import type { filterType } from '@/types'
 defineProps<{
-  status: 'all' | 'fake' | 'not-fake'
+  status: filterType
   pageSize: number
 }>()
 const emit = defineEmits<{
-  (e:'update:status', v:'all'|'fake'|'not-fake'):void
+  (e:'update:status', v:filterType):void
   (e:'update:pageSize', v:number):void
 }>()
 </script>

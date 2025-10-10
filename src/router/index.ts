@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import PostNews from '@/views/PostNews.vue'
 import NewsDetailView from '@/views/NewsDetailView.vue'
+import CommentListView from '@/views/CommentListView.vue'
+import PostComments from '@/views/PostComments.vue'
 import nProgress from 'nprogress'
 import { useNewsListStore } from '@/stores/news'
 import type { News } from '@/types'
@@ -14,14 +16,6 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
     },
     {
       path:'/post-news',
@@ -50,13 +44,13 @@ const router = createRouter({
         {
           path: 'view-comments',
           name: 'view-comments',
-          component: () => import('@/views/CommentListView.vue'),
+          component: CommentListView,
           props: true
         },
         {
           path: 'post-comment',
           name: 'post-comment',
-          component: () => import('@/views/PostComments.vue'),
+          component: PostComments,
           props: route => ({ newsId: Number(route.params.id) })
         }
       ]

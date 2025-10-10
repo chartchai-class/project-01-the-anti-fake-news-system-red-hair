@@ -1,53 +1,20 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-// import type { News } from '@/types'
-// import NewsServices from '@/services/NewsServices'
 import { useNewsListStore } from '@/stores/news'
 import { storeToRefs } from 'pinia'
+
 const route = useRoute()
 const router = useRouter()
 const childSection = ref<HTMLElement | null>(null)
-// const news = ref<News | null>(null)
 const loading = ref(false)
 const err = ref<string | null>(null)
 const showComments = ref(false)
-
-defineProps<{ id: number }>() //I just put it to remove warning in console.
 const newsStore = useNewsListStore()
 const { news } = storeToRefs(newsStore)
 
-// async function loadNews() {
-//   const id = Number(route.params.id)
-//   if (!id) {
-//     err.value = 'Invalid news ID'
-//     loading.value = false
-//     return
-//   }
-  
-//   try {
-//     const storeItem = newsStore.getById(id)
-//     if (storeItem) {
-//       news.value = storeItem
-//       loading.value = false
-//       return
-//     }
-    
-//     // If not in store and it's a temp item, it doesn't exist
-//     if (id < 0) {
-//       throw new Error('Temporary news item not found')
-//     }
-    
-//     // For regular items not in store, fetch from server
-//     const res = await NewsServices.getNewsById(id)
-//     news.value = res.data
-//   } catch (e: unknown) {
-//     err.value = e instanceof Error ? e.message : 'Failed to load news'
-//   } finally {
-//     loading.value = false
-//   }
-// }
-
+//I just put it to remove parent-child props warning in console.
+defineProps<{ id: number }>() 
 
 function goHome() {
   router.push({ name: 'home' })
@@ -65,8 +32,6 @@ watch(
     }
   }
 )
-
-// onMounted(loadNews)
 </script>
 
 <template>

@@ -3,20 +3,11 @@ import { ref, computed } from 'vue'
 import type { News } from '@/types'
 import Pagination from '@/components/Pagination.vue'
 import CommentCard from '@/components/CommentCard.vue'
-// import { useNewsListStore } from '@/stores/news'
-// import { useRoute } from 'vue-router'
 
 const props = defineProps<{
   news : News
 }>()
 
-// const route = useRoute()
-// const store = useNewsListStore()
-// const newsId = Number(route.params.id)
-
-// const news = computed(() => store.getById(newsId))
-
-// pagination
 const page = ref(1)
 const pageSize = 3
 

@@ -23,6 +23,8 @@ export interface Comment {
   commentDateTime: Date
 }
 
+export type filterType = 'all' | 'fake' | 'not-fake'
+
 export type voteType = 'fake' | 'not-fake'
 
 export interface NewsState {

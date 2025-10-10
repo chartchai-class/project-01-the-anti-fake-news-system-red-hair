@@ -1,4 +1,5 @@
 import axios from 'axios'
+import type { filterType } from '@/types'
 const BASE = 'https://cbsd-news-mock.onrender.com'
 
 const apiClient = axios.create({
@@ -20,22 +21,12 @@ export default {
     return apiClient.get(`/news/${id}`)
   },
 
-  // getNewsByPage(page: number, perPage: number, status?: 'fake'|'not-fake'|'all') {
-  //   const params: Record<string, string|number> = {
-  //     _page: page,
-  //     _limit: perPage,
-  //     t: Date.now(),
-  //   }
-  //   if (status && status !== 'all') params.voteType = status
-  //   return apiClient.get('news', { params })
-  // },
-
-  getNewsByPage(page: number, perPage: number){
-    return apiClient.get('news', {
-      params: {
-        _page: page,
-        _limit: perPage,
-      }
-    })
+  getNewsByPage(page: number, perPage: number, status?: filterType) {
+    const params: Record<string, string|number> = {
+      _page: page,
+      _limit: perPage,
+    }
+    if (status && status !== 'all') params.voteType = status
+    return apiClient.get('news', { params })
   }
 }

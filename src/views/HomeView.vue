@@ -1,25 +1,21 @@
 <script setup lang="ts">
-import { ref, onMounted, watchEffect } from 'vue'
-// import { useNewsListStore } from '@/stores/news'
+import { ref, watch, onMounted, watchEffect, onUnmounted } from 'vue'
 import FilterBar from '@/components/FilterBar.vue'
 import Pagination from '@/components/Pagination.vue'
 import NewsCard from '@/components/NewsCard.vue'
 import LoadingCircle from '@/components/LoadingCircle.vue'
 import NewsServices from '@/services/NewsServices'
-import type { News } from '@/types'
-
-// const store = useNewsListStore()
+import type { News, filterType } from '@/types'
 
 const news = ref<News[] | null>(null)
 const totalNews = ref(0)
-
-const status = ref<'all'|'fake'|'not-fake'>('all')
+const status = ref<filterType>('all') // filter type: 'all' | 'fake' | 'not-fake'
 const page = ref(1)
 const pageSize = ref(12)
 const loading = ref(false)
 const err = ref<string|null>(null)
 
-// scroll-to-top state
+// scroll top functions
 const showScrollTop = ref(false)
 function handleScroll(){
   showScrollTop.value = window.scrollY > 300
@@ -28,47 +24,29 @@ function scrollToTop(){
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-// // fetch list with current query params
-// function load() {
-//   loading.value = true
-//   err.value = null
-//   try {
-//     store.fetchOverallTotal({ status: status.value, page: page.value, pageSize: pageSize.value })
-//   } catch (e: any) {
-//     console.error(e); err.value = e?.message ?? 'Load failed'
-//   } finally {
-//     loading.value = false
-//   }
-// }
-
-// onMounted(() => { load(); window.addEventListener('scroll', handleScroll) })
-// onUnmounted(() => { window.removeEventListener('scroll', handleScroll) })
-// // when filter or pageSize changes, reset to page 1 and reload
-// watch([status, pageSize], () => { page.value = 1; load() })
-// // when page changes, reload
-// watch(page, load)
-
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
   watchEffect(() =>{
     loading.value = true
     err.value = null
-    NewsServices.getNewsByPage(page.value, pageSize.value)
-    .then((response) => {
-      news.value = response.data
-      console.log("news: ", news.value)
-      totalNews.value = response.headers['x-total-count'] ? parseInt(response.headers['x-total-count']) : 0
-    })
-    .finally(() => {
-      loading.value = false
-    })
-    .catch((error) => {
-      console.error(error)
-      err.value = error?.message ?? 'Load failed'
-      loading.value = false
-    })
+    NewsServices.getNewsByPage(page.value, pageSize.value, status.value)
+      .then((response) => {
+        news.value = response.data
+        totalNews.value = response.headers['x-total-count'] ? parseInt(response.headers['x-total-count']) : 0
+      })
+      .catch((error) => {
+        console.error(error)
+        err.value = error?.message ?? 'Load failed'
+      })
+      .finally(() => {
+        loading.value = false
+      })
   })
 })
+
+// reset page to 1 when filter or pageSize changes
+watch([status, pageSize], () => { page.value = 1 })
+onUnmounted(() => { window.removeEventListener('scroll', handleScroll) })
 
 </script>
 
@@ -98,7 +76,6 @@ onMounted(() => {
     <Pagination :total="totalNews" v-model:page="page" :pageSize="pageSize" class="my-5"/>
   </div>
 
-  <!-- Scroll To Top Button -- not mine x_x -->
   <button
     v-if="showScrollTop"
     @click="scrollToTop"
