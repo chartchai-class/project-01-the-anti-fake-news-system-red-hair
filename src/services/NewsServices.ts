@@ -10,7 +10,7 @@ const apiClient = axios.create({
   },
 })
 
-// Don't forget to pharse Date object manually after getting data from server -- i removed revive function for now
+// Don't forget to pharse datatype, especially Date object manually after getting data from server -- i removed revive function for now -- will add later
 export default {
   getNews() {
     return apiClient.get('/news')

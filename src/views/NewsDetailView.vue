@@ -1,51 +1,54 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { News } from '@/types'
-import NewsServices from '@/services/NewsServices'
+// import type { News } from '@/types'
+// import NewsServices from '@/services/NewsServices'
 import { useNewsListStore } from '@/stores/news'
+import { storeToRefs } from 'pinia'
 const route = useRoute()
 const router = useRouter()
 const childSection = ref<HTMLElement | null>(null)
-const newsStore = useNewsListStore()
-const news = ref<News | null>(null)
+// const news = ref<News | null>(null)
 const loading = ref(false)
 const err = ref<string | null>(null)
 const showComments = ref(false)
 
-async function loadNews() {
-  const id = Number(route.params.id)
-  if (!id) {
-    err.value = 'Invalid news ID'
-    loading.value = false
-    return
-  }
-  
-  try {
-    // First check if this item exists in the store (both temp and server items)
-    const storeItem = newsStore.getById(id)
-    if (storeItem) {
-      news.value = storeItem
-      loading.value = false
-      return
-    }
-    
-    // If not in store and it's a temp item, it doesn't exist
-    if (id < 0) {
-      throw new Error('Temporary news item not found')
-    }
-    
-    // For regular items not in store, fetch from server
-    const res = await NewsServices.getNewsById(id)
-    news.value = res.data
-  } catch (e: unknown) {
-    err.value = e instanceof Error ? e.message : 'Failed to load news'
-  } finally {
-    loading.value = false
-  }
-}
+defineProps<{ id: number }>() //I just put it to remove warning in console.
+const newsStore = useNewsListStore()
+const { news } = storeToRefs(newsStore)
 
-// go back to home
+// async function loadNews() {
+//   const id = Number(route.params.id)
+//   if (!id) {
+//     err.value = 'Invalid news ID'
+//     loading.value = false
+//     return
+//   }
+  
+//   try {
+//     const storeItem = newsStore.getById(id)
+//     if (storeItem) {
+//       news.value = storeItem
+//       loading.value = false
+//       return
+//     }
+    
+//     // If not in store and it's a temp item, it doesn't exist
+//     if (id < 0) {
+//       throw new Error('Temporary news item not found')
+//     }
+    
+//     // For regular items not in store, fetch from server
+//     const res = await NewsServices.getNewsById(id)
+//     news.value = res.data
+//   } catch (e: unknown) {
+//     err.value = e instanceof Error ? e.message : 'Failed to load news'
+//   } finally {
+//     loading.value = false
+//   }
+// }
+
+
 function goHome() {
   router.push({ name: 'home' })
 }
@@ -54,7 +57,7 @@ function goHome() {
 watch(
   () => route.fullPath,
   (newPath) => {
-    if (newPath.includes('/comments') || newPath.includes('/comment')) {
+    if (newPath.includes('/view-comments') || newPath.includes('/post-comment')) {
       // wait a tick to let content render
       requestAnimationFrame(() => {
         childSection.value?.scrollIntoView({ behavior: 'smooth' })
@@ -63,7 +66,7 @@ watch(
   }
 )
 
-onMounted(loadNews)
+// onMounted(loadNews)
 </script>
 
 <template>
@@ -101,14 +104,14 @@ onMounted(loadNews)
 
         <!-- Show Comments and Vote & Comment Buttons -->
         <div class="flex items-center justify-between gap-4 text-sm text-gray-600 mb-4">
-          <RouterLink :to="{ name: 'news-comments', params: { id: news.id } }">
+          <RouterLink :to="{ name: 'view-comments'}">
             <button @click="showComments = true" 
             class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]">
                   Show Comments ({{ news.comments.length }})
             </button>
           </RouterLink>
           <div class="flex flex-col gap-2">
-            <RouterLink :to="{ name: 'post-comment', params: { id: news.id } }">
+            <RouterLink :to="{ name: 'post-comment' }">
               <button class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]">
                 Vote & Comment
               </button>
@@ -121,7 +124,7 @@ onMounted(loadNews)
     <!-- comment modal -->
     <!-- <CommentListView v-if="news" :comments="news.comments" :show="showComments" @close="showComments = false"/> -->
     <div ref="childSection">
-      <router-view />
+      <router-view :news="news" />
     </div>
   </div>
 </template>

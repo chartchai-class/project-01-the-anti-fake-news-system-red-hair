@@ -33,15 +33,28 @@ const router = createRouter({
       name: 'news-detail',
       component: NewsDetailView,
       props: true,
+      beforeEnter: (to) => {
+        const id = parseInt(to.params.id as string)
+        const newsStore = useNewsListStore()
+        return NewsServices.getNewsById(id)
+          .then((response) => {
+            newsStore.setNews(response.data as News)
+          })
+          .catch((error) => {
+            // will fix later for error view
+            console.error('Failed to fetch news item:', error)
+            return { name: 'home'}
+          })
+      },
       children: [
         {
-          path: 'comments',
-          name: 'news-comments',
+          path: 'view-comments',
+          name: 'view-comments',
           component: () => import('@/views/CommentListView.vue'),
           props: true
         },
         {
-          path: 'comment',
+          path: 'post-comment',
           name: 'post-comment',
           component: () => import('@/views/PostComments.vue'),
           props: route => ({ newsId: Number(route.params.id) })

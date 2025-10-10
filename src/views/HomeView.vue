@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted, watchEffect } from 'vue'
-import { useNewsListStore } from '@/stores/news'
+import { ref, onMounted, watchEffect } from 'vue'
+// import { useNewsListStore } from '@/stores/news'
 import FilterBar from '@/components/FilterBar.vue'
 import Pagination from '@/components/Pagination.vue'
 import NewsCard from '@/components/NewsCard.vue'
