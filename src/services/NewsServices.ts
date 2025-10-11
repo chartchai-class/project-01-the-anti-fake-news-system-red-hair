@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { filterType } from '@/types'
+import type { filterType, News } from '@/types'
 const BASE = 'https://cbsd-news-mock.onrender.com'
 
 const apiClient = axios.create({
@@ -28,5 +28,14 @@ export default {
     }
     if (status && status !== 'all') params.voteType = status
     return apiClient.get('news', { params })
+  },
+
+  saveNews(news: News){
+    const {id, ...newData} = news // will handle id as increment in backend
+    return apiClient.post('/news', newData)
+  },
+
+  deleteNews(id: number) { // currently not used
+    return apiClient.delete(`/news/${id}`)
   }
 }
