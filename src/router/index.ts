@@ -1,7 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import PostNews from '@/views/PostNews.vue'
+import NewsDetailView from '@/views/NewsDetailView.vue'
+import CommentListView from '@/views/CommentListView.vue'
+import PostComments from '@/views/PostComments.vue'
 import nProgress from 'nprogress'
+import { useNewsListStore } from '@/stores/news'
+import type { News } from '@/types'
+import NewsServices from '@/services/NewsServices'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,14 +18,6 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
-    },
-    {
       path:'/post-news',
       name: 'post-news',
       component: PostNews
@@ -27,19 +25,32 @@ const router = createRouter({
     {
       path: '/news/:id',
       name: 'news-detail',
-      component: () => import('@/views/NewsDetailView.vue'),
+      component: NewsDetailView,
       props: true,
+      beforeEnter: (to) => {
+        const id = parseInt(to.params.id as string)
+        const newsStore = useNewsListStore()
+        return NewsServices.getNewsById(id)
+          .then((response) => {
+            newsStore.setNews(response.data as News)
+          })
+          .catch((error) => {
+            // will fix later for error view
+            console.error('Failed to fetch news item:', error)
+            return { name: 'home'}
+          })
+      },
       children: [
         {
-          path: 'comments',
-          name: 'news-comments',
-          component: () => import('@/views/CommentListView.vue'),
+          path: 'view-comments',
+          name: 'view-comments',
+          component: CommentListView,
           props: true
         },
         {
-          path: 'comment',
+          path: 'post-comment',
           name: 'post-comment',
-          component: () => import('@/views/PostComments.vue'),
+          component: PostComments,
           props: route => ({ newsId: Number(route.params.id) })
         }
       ]

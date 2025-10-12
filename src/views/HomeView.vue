@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue'
-import { useNewsListStore } from '@/stores/news'
+import { ref, watch, onMounted, watchEffect, onUnmounted } from 'vue'
 import FilterBar from '@/components/FilterBar.vue'
 import Pagination from '@/components/Pagination.vue'
 import NewsCard from '@/components/NewsCard.vue'
 import LoadingCircle from '@/components/LoadingCircle.vue'
+import NewsServices from '@/services/NewsServices'
+import type { News, filterType } from '@/types'
 
-const store = useNewsListStore()
-
-const status = ref<'all'|'fake'|'not-fake'>('all')
+const news = ref<News[] | null>(null)
+const totalNews = ref(0)
+const status = ref<filterType>('all') // filter type: 'all' | 'fake' | 'not-fake'
 const page = ref(1)
 const pageSize = ref(12)
 const loading = ref(false)
 const err = ref<string|null>(null)
 
-// scroll-to-top state
+// scroll top functions
 const showScrollTop = ref(false)
 function handleScroll(){
   showScrollTop.value = window.scrollY > 300
@@ -23,32 +24,36 @@ function scrollToTop(){
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-// fetch list with current query params
-async function load() {
-  loading.value = true
-  err.value = null
-  try {
-    await store.fetchOverallTotal({ status: status.value, page: page.value, pageSize: pageSize.value })
-  } catch (e: any) {
-    console.error(e); err.value = e?.message ?? 'Load failed'
-  } finally {
-    loading.value = false
-  }
-}
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+  watchEffect(() =>{
+    loading.value = true
+    err.value = null
+    NewsServices.getNewsByPage(page.value, pageSize.value, status.value)
+      .then((response) => {
+        news.value = response.data
+        totalNews.value = response.headers['x-total-count'] ? parseInt(response.headers['x-total-count']) : 0
+      })
+      .catch((error) => {
+        console.error(error)
+        err.value = error?.message ?? 'Load failed'
+      })
+      .finally(() => {
+        loading.value = false
+      })
+  })
+})
 
-onMounted(() => { load(); window.addEventListener('scroll', handleScroll) })
+// reset page to 1 when filter or pageSize changes
+watch([status, pageSize], () => { page.value = 1 })
 onUnmounted(() => { window.removeEventListener('scroll', handleScroll) })
-// when filter or pageSize changes, reset to page 1 and reload
-watch([status, pageSize], () => { page.value = 1; load() })
-// when page changes, reload
-watch(page, load)
+
 </script>
 
 <template>
   <div class="container mx-auto px-4 py-6">
     <div class="flex justify-between items-center">
       <h1 class="text-2xl font-bold mb-4"><span class="text-[#AB0000]">N</span>EWS LIST</h1>
-      <!-- Post-News button is appearing in navbar all the time and is moved to homeView only -->
       <RouterLink
         :to="{ name: 'post-news' }"
         class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]"
@@ -65,13 +70,12 @@ watch(page, load)
     </div>
 
     <div v-else class="grid md:grid-cols-3 gap-4">
-      <NewsCard v-for="n in store.list" :key="n.id" :item="n" />
+      <NewsCard v-for="n in news" :key="n.id" :item="n" />
     </div>
 
-    <Pagination :total="store.total" v-model:page="page" :pageSize="pageSize" class="my-5"/>
+    <Pagination :total="totalNews" v-model:page="page" :pageSize="pageSize" class="my-5"/>
   </div>
 
-  <!-- Scroll To Top Button -- not mine x_x -->
   <button
     v-if="showScrollTop"
     @click="scrollToTop"

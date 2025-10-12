@@ -1,10 +1,7 @@
 import axios from 'axios'
+import type { filterType, News } from '@/types'
+const BASE = 'https://cbsd-news-mock.onrender.com'
 
-// repo URL donot contain /new
-const BASE = 'https://cbsd-news-mock-production.up.railway.app'
-
-
-// Shared axios instance
 const apiClient = axios.create({
   baseURL: BASE,
   withCredentials: false,
@@ -14,25 +11,31 @@ const apiClient = axios.create({
   },
 })
 
+// Don't forget to pharse datatype, especially Date object manually after getting data from server -- i removed revive function for now -- will add later
 export default {
-  //  Get all news (no pagination)
   getNews() {
-    return apiClient.get('news', { params: { t: Date.now() } })
+    return apiClient.get('/news')
   },
 
-  //  Get single news by id.
   getNewsById(id: number) {
-    return apiClient.get(`news/${id}`, { params: { t: Date.now() } })
+    return apiClient.get(`/news/${id}`)
   },
 
-  // Server-side pagination + filter
-  getNewsByPage(page: number, perPage: number, status?: 'fake'|'not-fake'|'all') {
+  getNewsByPage(page: number, perPage: number, status?: filterType) {
     const params: Record<string, string|number> = {
       _page: page,
       _limit: perPage,
-      t: Date.now(),
     }
     if (status && status !== 'all') params.voteType = status
     return apiClient.get('news', { params })
   },
+
+  saveNews(news: News){
+    const {id, ...newData} = news // will handle id as increment in backend
+    return apiClient.post('/news', newData)
+  },
+
+  deleteNews(id: number) { // currently not used
+    return apiClient.delete(`/news/${id}`)
+  }
 }
