@@ -1,0 +1,5 @@
+services:
+    web:
+      image: "minthantko/redhair-frontend:latest" 
+      ports:  
+        - 8001:80
