@@ -5,28 +5,34 @@ import { useField, useForm } from 'vee-validate'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '@/stores/message.ts'
-import { RouterLink } from 'vue-router'
 const router = useRouter()
 const messageStore = useMessageStore()
 
 const validationSchema = yup.object({
     email: yup.string().required('The email is required'),
-    password: yup.string().required('The password is required')
+    password: yup.string().required('The password is required'),
+    firstname: yup.string().required('The email is required'),
+    lastname: yup.string().required('The email is required'),
 })
 const { errors, handleSubmit } = useForm({
     validationSchema,
     initialValues: {
+        firstname: '',
+        lastname: '',
         email: '', 
         password: ''
     }
 })
 const authStore = useAuthStore()
+const { value: firstname } = useField<string>('firstname')
+const { value: lastname } = useField<string>('lastname')
 const { value: email }  = useField<string>('email')
 const { value: password } = useField<string>('password')
+
 const onSubmit = handleSubmit((values) => {
-    authStore.login(values.email, values.password)
+    authStore.register(values.firstname, values.lastname, values.email, values.password)
     .then(() => {
-        router.push({ name: 'home' })
+        router.push({ name: 'event-list-view' })
     }).catch(() => {
         messageStore.updateMessage('could not login')
         setTimeout(() => {
@@ -40,11 +46,19 @@ const onSubmit = handleSubmit((values) => {
     <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-6 lg:px:8">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
             <!-- <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company"> -->
-            <h2 class="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your accont</h2>
+            <h2 class="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign up for new account</h2>
         </div>
         <span class="p-3"></span>
         <div class="m1-10 sm:mx-auto sm:w-full sm:max-w-sm">
             <form class="space-y-6" @submit.prevent="onSubmit">
+                <div>
+                    <label for="firstname" class="block text-sm font-medium leading-6 text-gray-900">FirstName</label>
+                    <InputText type="text" v-model="firstname" placeholder="FirstName" :error = "errors['firstname']"/>
+                </div>
+                <div>
+                    <label for="lastname" class="block text-sm font-medium leading-6 text-gray-900">LastName</label>
+                    <InputText type="text" v-model="lastname" placeholder="LastName" :error = "errors['lastname']"/>
+                </div>
                 <div>
                     <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
                     <InputText type="text" v-model="email" placeholder="Email address" :error = "errors['email']"/>
@@ -52,9 +66,12 @@ const onSubmit = handleSubmit((values) => {
                 <div>
                     <div class="flex items-center justify-between">
                         <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
-                        <div class="text-sm">
-                            <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</a>
-                        </div>
+                    </div>
+                    <InputText type="password" v-model="password" placeholder="Password" :error="errors['password']"/>
+                </div>
+                <div>
+                    <div class="flex items-center justify-between">
+                        <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Confirm Password</label>
                     </div>
                     <InputText type="password" v-model="password" placeholder="Password" :error="errors['password']"/>
                 </div>
@@ -62,14 +79,14 @@ const onSubmit = handleSubmit((values) => {
                     <button type="submit" class="flex w-full justify-center rounded-md 
                     bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm
                     hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2
-                    focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign in</button>
+                    focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign Up</button>
                 </div>
             </form>
-            <p class="mt-10 text-center text-sm text-gray-500">Not a member? {{  ' ' }}
+            <p class="mt-10 text-center text-sm text-gray-500">Already have an account? {{  ' ' }}
                 <RouterLink 
-                    :to="{ name: 'register' }" 
+                    :to="{ name: 'login' }" 
                     class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-                    Try to register here
+                    Login here
                 </RouterLink>
             </p>
         </div>
