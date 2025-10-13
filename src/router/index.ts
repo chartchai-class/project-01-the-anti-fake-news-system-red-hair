@@ -8,6 +8,7 @@ import nProgress from 'nprogress'
 import { useNewsListStore } from '@/stores/news'
 import type { News } from '@/types'
 import NewsServices from '@/services/NewsServices'
+import LoginView from '@/views/LoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,6 +55,11 @@ const router = createRouter({
           props: route => ({ newsId: Number(route.params.id) })
         }
       ]
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
     }
   ],
 })

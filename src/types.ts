@@ -42,3 +42,7 @@ export interface User {
   profileImage: string
   role: role
 }
+
+export interface MessageState {
+    message: string
+}
