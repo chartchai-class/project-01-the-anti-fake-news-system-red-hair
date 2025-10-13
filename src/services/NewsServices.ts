@@ -1,15 +1,6 @@
-import axios from 'axios'
 import type { filterType, News } from '@/types'
-const BASE = 'https://cbsd-news-mock.onrender.com'
-
-const apiClient = axios.create({
-  baseURL: BASE,
-  withCredentials: false,
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
-})
+import apiClient from './AxiosClient'
+import type { AxiosResponse } from 'axios'
 
 // Don't forget to pharse datatype, especially Date object manually after getting data from server -- i removed revive function for now -- will add later
 export default {
