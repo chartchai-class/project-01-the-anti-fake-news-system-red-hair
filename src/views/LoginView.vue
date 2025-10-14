@@ -11,19 +11,16 @@ const messageStore = useMessageStore()
 
 const validationSchema = yup.object({
     username: yup.string().required('The username is required'),
-    // email: yup.string().required('The email is required').email('The email is invalid'),
     password: yup.string().required('The password is required')
 })
-const { errors, handleSubmit } = useForm({
+const { errors, setErrors, handleSubmit } = useForm({
     validationSchema,
     initialValues: {
         username: '',
-        // email: '', 
         password: ''
     }
 })
 const authStore = useAuthStore()
-// const { value: email }  = useField<string>('email')
 const { value: username }  = useField<string>('username')
 const { value: password } = useField<string>('password')
 const onSubmit = handleSubmit((values) => {
@@ -31,10 +28,9 @@ const onSubmit = handleSubmit((values) => {
     .then(() => {
         router.push({ name: 'home' })
     }).catch(() => {
-        messageStore.updateMessage('could not login')
-        setTimeout(() => {
-            messageStore.resetMessage()
-        }, 3000)
+        setErrors({
+            username: 'Incorrect username or password'
+        })
     })
 })
 </script>

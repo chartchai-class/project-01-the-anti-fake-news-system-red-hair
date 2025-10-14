@@ -5,6 +5,7 @@ import { useField, useForm } from 'vee-validate'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '@/stores/message.ts'
+import SingleImageUpload from '@/components/SingleImageUpload.vue'
 const router = useRouter()
 const messageStore = useMessageStore()
 
@@ -17,22 +18,26 @@ const validationSchema = yup.object({
 const { errors, handleSubmit } = useForm({
     validationSchema,
     initialValues: {
+        username: '',
         firstname: '',
         lastname: '',
         email: '', 
-        password: ''
+        password: '',
+        profileImage: ''
     }
 })
 const authStore = useAuthStore()
+const { value: username } = useField<string>('username')
 const { value: firstname } = useField<string>('firstname')
 const { value: lastname } = useField<string>('lastname')
 const { value: email }  = useField<string>('email')
 const { value: password } = useField<string>('password')
+const { value: profileImage } = useField<string>('profileImage')
 
 const onSubmit = handleSubmit((values) => {
-    authStore.register(values.firstname, values.lastname, values.email, values.password)
+    authStore.register(values. username, values.firstname, values.lastname, values.email, values.password, values.profileImage)
     .then(() => {
-        router.push({ name: 'event-list-view' })
+        router.push({ name: 'home' })
     }).catch(() => {
         messageStore.updateMessage('could not login')
         setTimeout(() => {
@@ -51,6 +56,10 @@ const onSubmit = handleSubmit((values) => {
         <span class="p-3"></span>
         <div class="m1-10 sm:mx-auto sm:w-full sm:max-w-sm">
             <form class="space-y-6" @submit.prevent="onSubmit">
+                <div>
+                    <label for="firstname" class="block text-sm font-medium leading-6 text-gray-900">Username</label>
+                    <InputText type="text" v-model="username" placeholder="Username" :error = "errors['username']"/>
+                </div>
                 <div>
                     <label for="firstname" class="block text-sm font-medium leading-6 text-gray-900">FirstName</label>
                     <InputText type="text" v-model="firstname" placeholder="FirstName" :error = "errors['firstname']"/>
@@ -75,6 +84,7 @@ const onSubmit = handleSubmit((values) => {
                     </div>
                     <InputText type="password" v-model="password" placeholder="Password" :error="errors['password']"/>
                 </div>
+                <SingleImageUpload type="image" v-model="profileImage" :errors="errors['profileImage']"/>
                 <div>
                     <button type="submit" class="flex w-full justify-center rounded-md 
                     bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm

@@ -3,15 +3,18 @@ import { RouterView } from 'vue-router'
 import 'nprogress/nprogress.css'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from './stores/auth'
-import { mdiAccountPlus, mdiLogin } from '@mdi/js'
+import { mdiLogin } from '@mdi/js'
 import { mdiAccount } from '@mdi/js'
 import SvgIcon from '@jamescoyle/vue-icon'
+import { useMessageStore } from './stores/message'
+import { storeToRefs } from 'pinia'
 const router = useRouter()
 const authStore = useAuthStore()
 function goHome() {
   router.push({ name: 'home' })
 }
-
+const store = useMessageStore()
+const { message } = storeToRefs(store)
 const token = localStorage.getItem('access_token')
 const user = localStorage.getItem('user')
 
@@ -25,6 +28,9 @@ if(token && user) {
 <template>
   <div class="bg-gradient-to-br from-gray-50 to-gray-200">
     <header class="sticky top-0 z-50 bg-black/95 border-b">
+      <div class="text-center animate-fade bg-red-500" v-if="message">
+        <h4>{{ message }}</h4>
+      </div>
       <div class="max-w-7xl mx-auto px-4 py-3 flex items-center">
         <img @click="goHome" alt="Vue logo"
           class="hidden sm:block w-7 h-7 lg:w-9 lg:h-9 sm:w-8 sm:h-8 rounded object-cover cursor-pointer"
@@ -62,11 +68,3 @@ if(token && user) {
     <RouterView />
   </div>
 </template>
-
-
-<!-- <li>
-              <router-link to="/login" class="flex items-center text-white hover:text-red-400">
-                <SvgIcon class="w-5 h-5 fill-white" type="mdi" :path="mdiLogin" />
-                <span class="ml-2">Login</span>
-              </router-link>
-            </li> -->
