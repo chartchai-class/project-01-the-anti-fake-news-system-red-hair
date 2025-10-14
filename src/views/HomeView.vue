@@ -52,14 +52,25 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll) })
 
 <template>
   <div class="container mx-auto px-4 py-6">
-    <div class="flex justify-between items-center">
-      <h1 class="text-2xl font-bold mb-4"><span class="text-[#AB0000]">N</span>EWS LIST</h1>
+    <div class="flex justify-between items-center grid grid-cols-3">
+      <h1 class="text-2xl font-bold mb-4">
+        <span class="text-[#AB0000]">N</span>EWS LIST
+      </h1>
+      <div></div>
+      <div class="grid grid-cols-2 flex gap-20">
+      <RouterLink
+        :to="{ name: 'user-manage' }"
+        class="inline-flex justify-center items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000] text-xs sm:text-base"
+      >
+        Manage users      
+      </RouterLink>
       <RouterLink
         :to="{ name: 'post-news' }"
-        class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]"
+        class="inline-flex justify-center items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000] text-xs sm:text-base"
       >
-        <span class="text-lg leading-none">＋</span> Add News
+        Add News
       </RouterLink>
+      </div>
     </div>
 
     <FilterBar v-model:status="status" v-model:pageSize="pageSize" />

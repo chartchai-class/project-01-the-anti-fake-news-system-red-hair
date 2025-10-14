@@ -11,6 +11,7 @@ import NewsServices from '@/services/NewsServices'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import UserManageView from '@/views/UserManageView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -68,10 +69,15 @@ const router = createRouter({
       name: 'register',
       component: RegisterView
     },
-        {
+    {
       path: '/profile',
       name: 'profile',
       component: ProfileView
+    },
+    {
+      path: '/user-manage',
+      name: 'user-manage',
+      component: UserManageView
     }
   ],
 })
