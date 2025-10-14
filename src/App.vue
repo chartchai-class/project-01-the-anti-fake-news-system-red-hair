@@ -11,6 +11,15 @@ const authStore = useAuthStore()
 function goHome() {
   router.push({ name: 'home' })
 }
+
+const token = localStorage.getItem('access_token')
+const user = localStorage.getItem('user')
+
+if(token && user) {
+  authStore.reload(token, JSON.parse(user))
+} else {
+  authStore.logout()
+}
 </script>
 
 <template>
