@@ -30,3 +30,20 @@ export type voteType = 'fake' | 'not-fake'
 export interface NewsState {
   news: News | null
 }
+
+export type roles = 'ROLE_READER' | 'ROLE_MEMBER' | 'ROLE_ADMIN'
+
+export interface User {
+  id: number
+  username: string
+  firstName: string
+  lastName: string
+  email: string
+  // password: string
+  profileImage: string
+  roles: roles[]
+}
+
+export interface MessageState {
+    message: string
+}
