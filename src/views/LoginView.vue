@@ -10,21 +10,24 @@ const router = useRouter()
 const messageStore = useMessageStore()
 
 const validationSchema = yup.object({
-    email: yup.string().required('The email is required'),
+    username: yup.string().required('The username is required'),
+    // email: yup.string().required('The email is required').email('The email is invalid'),
     password: yup.string().required('The password is required')
 })
 const { errors, handleSubmit } = useForm({
     validationSchema,
     initialValues: {
-        email: '', 
+        username: '',
+        // email: '', 
         password: ''
     }
 })
 const authStore = useAuthStore()
-const { value: email }  = useField<string>('email')
+// const { value: email }  = useField<string>('email')
+const { value: username }  = useField<string>('username')
 const { value: password } = useField<string>('password')
 const onSubmit = handleSubmit((values) => {
-    authStore.login(values.email, values.password)
+    authStore.login(values.username, values.password)
     .then(() => {
         router.push({ name: 'home' })
     }).catch(() => {
@@ -46,8 +49,8 @@ const onSubmit = handleSubmit((values) => {
         <div class="m1-10 sm:mx-auto sm:w-full sm:max-w-sm">
             <form class="space-y-6" @submit.prevent="onSubmit">
                 <div>
-                    <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
-                    <InputText type="text" v-model="email" placeholder="Email address" :error = "errors['email']"/>
+                    <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Username</label>
+                    <InputText type="text" v-model="username" placeholder="Username" :error = "errors['username']"/>
                 </div>
                 <div>
                     <div class="flex items-center justify-between">

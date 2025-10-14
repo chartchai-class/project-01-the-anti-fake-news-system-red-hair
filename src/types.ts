@@ -31,16 +31,17 @@ export interface NewsState {
   news: News | null
 }
 
-export type role = 'reader' | 'member' | 'admin'
+export type roles = 'ROLE_READER' | 'ROLE_MEMBER' | 'ROLE_ADMIN'
 
 export interface User {
   id: number
+  username: string
   firstName: string
   lastName: string
   email: string
-  password: string
+  // password: string
   profileImage: string
-  role: role
+  roles: roles[]
 }
 
 export interface MessageState {

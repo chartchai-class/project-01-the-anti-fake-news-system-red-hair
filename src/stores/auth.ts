@@ -22,23 +22,23 @@ export const useAuthStore = defineStore('auth', {
             return this.user?.firstName || ''
         },
         isReader(): boolean {
-            return this.user?.role.includes('ROLE_READER') || false
+            return this.user?.roles.includes('ROLE_READER') || false
         },
         isMember(): boolean {
-            return this.user?.role.includes('ROLE_MEMBER') || false
+            return this.user?.roles.includes('ROLE_MEMBER') || false
         },
         isAdmin(): boolean {
-            return this.user?.role.includes('ROLE_ADMIN') || false
+            return this.user?.roles.includes('ROLE_ADMIN') || false
         },
         authorizationHeader(): string {
             return `Bearer ${this.token}`
         }
     },
     actions: {
-        login(email: string, password: string) {
+        login(username: string, password: string) {
             return apiClient
             .post('/api/v1/auth/authenticate', {
-                email: email,
+                username: username,
                 password: password
             })
             .then((response) => {
@@ -61,9 +61,10 @@ export const useAuthStore = defineStore('auth', {
             this.token = token
             this.user = user
         },
-        register(firstName: string, lastName: string, email: string, password: string, image: string) {
+        register(username: string, firstName: string, lastName: string, email: string, password: string, image: string) {
             return apiClient
             .post('/api/v1/auth/register', {
+                username: username,
                 firstname: firstName,
                 lastname: lastName,
                 email: email,
