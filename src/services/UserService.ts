@@ -9,5 +9,8 @@ export default {
     },
     getUser(id: number) {
         return apiClient.get('users/' + id)
+    },
+    editUser(id: number, roles: string[]) {
+        return apiClient.get('users/' + id + '/roles')
     }
 }
