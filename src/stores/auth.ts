@@ -19,7 +19,7 @@ export const useAuthStore = defineStore('auth', {
     }),
     getters: {
         currentUserName(): string {
-            return this.user?.firstName || ''
+            return this.user?.displayName || ''
         },
         isReader(): boolean {
             return this.user?.roles.includes('ROLE_READER') || false

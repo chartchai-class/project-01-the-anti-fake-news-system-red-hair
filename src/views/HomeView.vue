@@ -6,6 +6,7 @@ import NewsCard from '@/components/NewsCard.vue'
 import LoadingCircle from '@/components/LoadingCircle.vue'
 import NewsServices from '@/services/NewsServices'
 import type { News, filterType } from '@/types'
+import { useAuthStore } from '@/stores/auth'
 
 const news = ref<News[] | null>(null)
 const totalNews = ref(0)
@@ -14,6 +15,8 @@ const page = ref(1)
 const pageSize = ref(12)
 const loading = ref(false)
 const err = ref<string|null>(null)
+
+const authStore = useAuthStore()
 
 // scroll top functions
 const showScrollTop = ref(false)
@@ -52,14 +55,29 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll) })
 
 <template>
   <div class="container mx-auto px-4 py-6">
-    <div class="flex justify-between items-center">
-      <h1 class="text-2xl font-bold mb-4"><span class="text-[#AB0000]">N</span>EWS LIST</h1>
-      <RouterLink
-        :to="{ name: 'post-news' }"
-        class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]"
-      >
-        <span class="text-lg leading-none">＋</span> Add News
-      </RouterLink>
+    <div class="flex justify-between items-center grid grid-cols-3">
+      <h1 class="text-2xl font-bold mb-4">
+        <span class="text-[#AB0000]">N</span>EWS LIST
+      </h1>
+      <div></div>
+      <div class="grid grid-cols-2">
+        <span class="w-15" v-if="authStore.isAdmin">
+          <RouterLink
+          :to="{ name: 'user-manage' }"
+          class=" inline-flex justify-center items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000] text-xs sm:text-base"
+          >
+          Manage users      
+          </RouterLink>
+        </span>
+        <span v-if="authStore.isMember || authStore.isAdmin">
+          <RouterLink
+          :to="{ name: 'post-news' }"
+          class="inline-flex justify-center items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000] text-xs sm:text-base"
+          >
+          Add News
+          </RouterLink>
+        </span>
+      </div>
     </div>
 
     <FilterBar v-model:status="status" v-model:pageSize="pageSize" />

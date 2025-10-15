@@ -38,12 +38,20 @@ export interface User {
   username: string
   firstName: string
   lastName: string
+  displayName: string
   email: string
+  phoneNumber: string
   // password: string
   profileImage: string
   roles: roles[]
+  reportedNews: News[]
+  comments: Comment[]
 }
 
 export interface MessageState {
     message: string
+}
+
+export interface UserState {
+    user: User | null
 }
