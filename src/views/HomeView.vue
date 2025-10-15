@@ -5,12 +5,15 @@ import Pagination from '@/components/Pagination.vue'
 import NewsCard from '@/components/NewsCard.vue'
 import LoadingCircle from '@/components/LoadingCircle.vue'
 import NewsServices from '@/services/NewsServices'
-import type { News, filterType } from '@/types'
+import { type searchType, type News, type filterType } from '@/types'
 import { useAuthStore } from '@/stores/auth'
+import SearchBar from '@/components/SearchBar.vue'
 
 const news = ref<News[] | null>(null)
 const totalNews = ref(0)
 const status = ref<filterType>('all') // filter type: 'all' | 'fake' | 'not-fake'
+const searchBy = ref<searchType>('title') // search type: 'title' | 'description' | 'reporter'
+const keyword = ref('') // search keyword
 const page = ref(1)
 const pageSize = ref(12)
 const loading = ref(false)
@@ -32,7 +35,7 @@ onMounted(() => {
   watchEffect(() =>{
     loading.value = true
     err.value = null
-    NewsServices.getNewsByPage(page.value, pageSize.value, status.value)
+    NewsServices.getNewsByPage(page.value, pageSize.value, status.value, searchBy.value, keyword.value)
       .then((response) => {
         news.value = response.data
         totalNews.value = response.headers['x-total-count'] ? parseInt(response.headers['x-total-count']) : 0
@@ -48,15 +51,15 @@ onMounted(() => {
 })
 
 // reset page to 1 when filter or pageSize changes
-watch([status, pageSize], () => { page.value = 1 })
+watch([keyword, status, searchBy, pageSize], () => { page.value = 1 })
 onUnmounted(() => { window.removeEventListener('scroll', handleScroll) })
 
 </script>
 
 <template>
   <div class="container mx-auto px-4 py-6">
-    <div class="flex justify-between items-center grid grid-cols-3">
-      <h1 class="text-2xl font-bold mb-4">
+    <div class="flex justify-between items-center grid grid-cols-3 content-center mb-4">
+      <h1 class="text-2xl font-bold">
         <span class="text-[#AB0000]">N</span>EWS LIST
       </h1>
       <div></div>
@@ -80,7 +83,11 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll) })
       </div>
     </div>
 
-    <FilterBar v-model:status="status" v-model:pageSize="pageSize" />
+    <div class="flex grid grid-cols-3">
+      <div class="content-center"><FilterBar v-model:status="status" v-model:pageSize="pageSize" /></div>
+      <div></div>
+      <div><SearchBar v-model:searchBy="searchBy" v-model:keyword="keyword"/></div>
+    </div>
 
     <div v-if="err" class="p-4 text-red-600">Error: {{ err }}</div>
     <div v-else-if="loading" class="p-6 text-gray-500 m-10 flex justify-center items-center">

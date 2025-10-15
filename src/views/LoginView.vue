@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router'
 import { RouterLink } from 'vue-router'
 const router = useRouter()
 
+
 const validationSchema = yup.object({
     username: yup.string().required('The username is required'),
     password: yup.string().required('The password is required')

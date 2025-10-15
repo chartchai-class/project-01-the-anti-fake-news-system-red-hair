@@ -1,4 +1,4 @@
-import type { filterType, News } from '@/types'
+import type { filterType, News, searchType } from '@/types'
 import apiClient from './AxiosClient'
 import type { AxiosResponse } from 'axios'
 
@@ -12,13 +12,19 @@ export default {
     return apiClient.get(`/news/${id}`)
   },
 
-  getNewsByPage(page: number, perPage: number, status?: filterType) {
+  getNewsByPage(page: number, perPage: number, status?: filterType, searchBy?: searchType, keyword?: string): Promise<AxiosResponse<News[]>> {
     const params: Record<string, string|number> = {
       _page: page,
       _limit: perPage,
     }
     if (status && status !== 'all') params.voteType = status
-    return apiClient.get('news', { params })
+    if (searchBy && searchBy !== 'title') params.searchBy = searchBy
+    if (keyword && keyword.trim() !== '') params.keyword = keyword // using like for partial match
+    return apiClient.get<News[]>('news', { params })
+  },
+
+  getNewsByKeyword(keyword: string, perPage: number, page: number): Promise<AxiosResponse<News[]>> {
+    return apiClient.get<News[]>('/news?title=' + keyword + '&_limit=' + perPage + '&_page=' + page)
   },
 
   saveNews(news: News){
