@@ -42,7 +42,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex flex-col">
+    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex flex-col items-center">
         <!-- Back button -->
         <RouterLink :to="{ name: 'home' }" class="self-start">
             <button class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 mt-6 mb-4 shadow">Back</button>
@@ -50,8 +50,8 @@ onMounted(() => {
 
         <h1 class="text-3xl font-bold text-center mb-6 text-black">User Management</h1>
 
-        <div class="flex flex-col items-center">
-            <label for="limit-select">User Per Page:</label>
+        <div class="flex flex-col">
+            <label class="m-2" for="limit-select">User Per Page:</label>
             <select id="limit-select" v-model.number="limit" @change="updateLimit(limit)" class="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500">
                 <option :value="1">1</option>
                 <option :value="2">2</option>
@@ -61,19 +61,22 @@ onMounted(() => {
             </select>
         </div>
         <!-- Dropdown for selecting number of events per page -->
-        
 
-        <div class="grid grid-cols-5 px-20 py-2 bg-black text-white font-bold mx-20  rounded-lg">
-            <div class="text-center">ID</div>
-            <div class="text-center">User Name</div>
-            <div class="text-center">Gmail</div>
-            <div class="text-center">Role</div>
-            <div class="text-center">Edit</div>
-        </div>
+        <div class="grid grid-cols-4 w-200">
+            <div class="py-2 bg-black text-white font-bold mb-5 mt-5  rounded-lg col-span-4 content-center">
+                <div class="grid grid-cols-4">
+                    <div class="text-center">ID</div>
+                    <div class="text-center">User Name</div>
+                    <div class="text-center">Gmail</div>
+                    <div class="text-center">Role</div>
+                </div>
+            </div>
 
-        <div class="grid grid-cols-5 px-20 py-5 mx-20">
+            
             <UserCard v-for="user in users" :key="user.id" :user="user" />
+            
         </div>
+        
 
         <div class="flex justify-between gap-4 mt-6 w-full max-w-md">
             <div :class="{ 'invisible': page <= 1 }">

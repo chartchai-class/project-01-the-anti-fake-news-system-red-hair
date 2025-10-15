@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<BaseSelectProps>(), { label: ''})
     <!-- <label v-if="label">
         {{ props.label }}
     </label> -->
-    <select class="mb-6" v-bind="$attrs" v-model="modelValue">
+    <select class="m-3" v-bind="$attrs" v-model="modelValue">
         <option
             v-for="role in props.roles"
             :key="role"
