@@ -65,8 +65,8 @@ onMounted(() => {
             <div class="py-2 bg-black text-white font-bold mb-5 mt-5  rounded-lg col-span-5 content-center">
                 <div class="grid grid-cols-5">
                     <div class="text-center">ID</div>
+                    <div class="text-center">Username</div>
                     <div class="text-center">Display Name</div>
-                    <div class="text-center">User Name</div>
                     <div class="text-center">Gmail</div>
                     <div class="text-center">Role</div>
                 </div>

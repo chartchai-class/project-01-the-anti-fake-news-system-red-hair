@@ -1,13 +1,27 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { useUserProfileStore } from '@/stores/profile'
-import { computed } from 'vue'
+import { onMounted, ref } from 'vue'
+import UserService from '@/services/UserService'
+import type { User } from '@/types'
 
 const router = useRouter()
 const authStore = useAuthStore()
-const profileStore = useUserProfileStore()
-const user = computed(() => profileStore.user)
+const user = ref<User | null>(null)
+
+onMounted(() => {
+  if (!authStore.isAuthenticated) {
+    router.push({ name: 'login' })
+  }
+  UserService.getUserProfile()
+  .then((response) => {
+    console.log("Fetched user profile:", response.data)
+    user.value = response.data
+  })
+  .catch((error) => {
+    console.error("Error fetching user profile:", error)
+  })
+})
 
 function logout() {
   authStore.logout()
@@ -48,9 +62,11 @@ function editProfile() {
                     <p class="text-sm text-gray-500 mb-0 flex-1 w-48 ">Email</p>
                     <p class="text-lg font-semibold text-gray-900 flex-1">{{ user?.email }}</p>
                 </div>
-                <div class="flex items-center h-10">
-                    <p class="text-sm text-gray-500 mb-0 flex-1 w-48 ">Role</p>
-                    <p v-for="role in user?.roles" :key="role" class="text-lg font-semibold text-gray-900 flex-1">{{ role }}</p>
+                <div class="flex items-start h-10">
+                    <p class="text-sm text-gray-500 mb-0 flex-1 w-48 self-start">Role(s)</p>
+                    <div class="flex flex-col flex-1 self-start">
+                      <p v-for="role in user?.roles" :key="role" class="text-lg font-semibold text-gray-900">{{ role }}</p>
+                    </div>                    
                 </div>
                 <div class="flex justify-between mt-8 w-full max-w-lg mx-auto">
                   <button class="bg-black text-white px-2 py-2 rounded-lg hover:bg-[#720000] shadow flex-1 mx-2" @click="editProfile">Edit</button>
