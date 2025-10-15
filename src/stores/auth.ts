@@ -21,6 +21,9 @@ export const useAuthStore = defineStore('auth', {
         currentUserName(): string {
             return this.user?.displayName || ''
         },
+        currentUserImage(): string {
+            return this.user?.profileImage || ''
+        },
         isReader(): boolean {
             return this.user?.roles.includes('ROLE_READER') || false
         },
