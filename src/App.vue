@@ -56,7 +56,12 @@ if(token && user) {
             <li>
               <router-link to="/profile" class="flex items-center text-white hover:text-red-400">
                 <div class="w-7 h-7 flex items-center justify-center rounded-full bg-[#AB0000]">
-                  <SvgIcon class="w-5 h-5 fill-white" type="mdi" :path="mdiAccount" />
+                  <span v-if="user">
+                    <img :src="JSON.parse(user).profileImage" alt="Profile" class="w-7 h-7 rounded-full object-cover"/>
+                  </span>
+                  <span v-else >
+                      <SvgIcon class="w-5 h-5 fill-white" type="mdi" :path="mdiAccount" />
+                  </span>
                 </div>
                 <span class="ml-2">{{ authStore.currentUserName }}</span>
               </router-link>
