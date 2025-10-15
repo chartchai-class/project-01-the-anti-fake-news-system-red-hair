@@ -12,14 +12,15 @@ export default {
     return apiClient.get(`/news/${id}`)
   },
 
-  getNewsByPage(page: number, perPage: number, status?: filterType, searchBy?: searchType) {
+  getNewsByPage(page: number, perPage: number, status?: filterType, searchBy?: searchType, keyword?: string): Promise<AxiosResponse<News[]>> {
     const params: Record<string, string|number> = {
       _page: page,
       _limit: perPage,
     }
     if (status && status !== 'all') params.voteType = status
     if (searchBy && searchBy !== 'title') params.searchBy = searchBy
-    return apiClient.get('news', { params })
+    if (keyword && keyword.trim() !== '') params.keyword = keyword // using like for partial match
+    return apiClient.get<News[]>('news', { params })
   },
 
   getNewsByKeyword(keyword: string, perPage: number, page: number): Promise<AxiosResponse<News[]>> {
