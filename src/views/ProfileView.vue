@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useUserProfileStore } from '@/stores/profile'
 import { computed } from 'vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
-const user = computed(() => authStore.user)
+const profileStore = useUserProfileStore()
+const user = computed(() => profileStore.user)
 
 function logout() {
   authStore.logout()

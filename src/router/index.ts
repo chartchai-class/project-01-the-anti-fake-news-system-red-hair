@@ -12,6 +12,8 @@ import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import UserManageView from '@/views/UserManageView.vue'
+import UserService from '@/services/UserService'
+import { useUserProfileStore } from '@/stores/profile'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -72,7 +74,22 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: ProfileView
+      component: ProfileView,
+      beforeEnter: () => {
+        const authToken = localStorage.getItem('access_token')
+        const profileStore = useUserProfileStore()
+        if (!authToken) {
+          return { name: 'login' }
+        }
+        UserService.getUser()
+        .then((response) => { // to store in profile store
+          profileStore.setUsers(response.data)
+        })
+        .catch((error) => {
+          console.error('Failed to fetch user profile:', error)
+          return { name: 'login' }
+        })
+      }
     },
     {
       path: '/user-manage',

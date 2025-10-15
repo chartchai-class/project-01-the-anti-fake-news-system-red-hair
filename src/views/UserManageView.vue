@@ -47,7 +47,6 @@ onMounted(() => {
         <RouterLink :to="{ name: 'home' }" class="self-start">
             <button class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 mt-6 mb-4 shadow">Back</button>
         </RouterLink>
-
         <h1 class="text-3xl font-bold text-center mb-6 text-black">User Management</h1>
 
         <div class="flex flex-col">
@@ -62,10 +61,11 @@ onMounted(() => {
         </div>
         <!-- Dropdown for selecting number of events per page -->
 
-        <div class="grid grid-cols-4 w-200">
-            <div class="py-2 bg-black text-white font-bold mb-5 mt-5  rounded-lg col-span-4 content-center">
-                <div class="grid grid-cols-4">
+        <div class="grid grid-cols-5 w-200">
+            <div class="py-2 bg-black text-white font-bold mb-5 mt-5  rounded-lg col-span-5 content-center">
+                <div class="grid grid-cols-5">
                     <div class="text-center">ID</div>
+                    <div class="text-center">Display Name</div>
                     <div class="text-center">User Name</div>
                     <div class="text-center">Gmail</div>
                     <div class="text-center">Role</div>

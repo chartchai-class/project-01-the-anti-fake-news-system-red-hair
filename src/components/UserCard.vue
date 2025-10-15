@@ -14,6 +14,7 @@ const selectedRole = ref<string>(props.user.roles[0] || '');
 
 <template>
     <div class="content-center text-center">{{ user.id }}</div>
+    <div class="content-center text-center">{{ user.displayName }}</div>
     <div class="content-center text-center">{{ user.username }}</div>
     <div class="content-center text-center">{{ user.email }}</div>
     <div class="content-center text-center">

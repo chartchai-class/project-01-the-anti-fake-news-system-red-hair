@@ -1,16 +1,16 @@
-import apiClient from "./AxiosClient"
+import apiClient from '@/services/AxiosClient'
 
 export default {
     getAllUsers() {
-        return apiClient.get('/users')
+        return apiClient.get('/users/profiles')
     },
     getUsers(perPage: number, page: number) {
-        return apiClient.get('/users?_limit=' + perPage + '&_page=' + page)
+        return apiClient.get('/users/profiles?_limit=' + perPage + '&_page=' + page)
     },
-    getUser(id: number) {
-        return apiClient.get('users/' + id)
+    getUser() {
+        return apiClient.get('/profiles/me')
     },
     editUser(id: number, roles: string[]) {
-        return apiClient.get('users/' + id + '/roles')
+        return apiClient.put('users/' + id, { roles: roles })
     }
 }
