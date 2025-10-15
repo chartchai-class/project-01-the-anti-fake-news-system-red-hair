@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { User } from '@/types';
 import BaseSelect from './BaseSelect.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import UserService from '@/services/UserService';
 
 
 const props = defineProps<{
@@ -9,6 +10,22 @@ const props = defineProps<{
 }>()
 
 const selectedRole = ref<string>(props.user.roles[0] || '');
+
+function updateUserRole(){
+    console.log('Updating user role to:', selectedRole.value);
+    UserService.editUser(props.user.id, [selectedRole.value] as string[])
+    .then((response) => {
+        console.log('User role updated successfully', response.data);
+    })
+    .catch((error) => {
+        console.error('Error updating user role', error);
+    });
+}
+
+watch(selectedRole, () => {
+    console.log('Role changed to:', selectedRole.value);
+    updateUserRole();
+})
 
 </script>
 
