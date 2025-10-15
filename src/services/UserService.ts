@@ -7,7 +7,7 @@ export default {
     getUsers(perPage: number, page: number) {
         return apiClient.get('/users/profiles?_limit=' + perPage + '&_page=' + page)
     },
-    getUser() {
+    getUserProfile() {
         return apiClient.get('/profiles/me')
     },
     editUser(id: number, roles: string[]) {

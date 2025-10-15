@@ -33,15 +33,20 @@ export interface NewsState {
 
 export type roles = 'ROLE_READER' | 'ROLE_MEMBER' | 'ROLE_ADMIN'
 
+export interface AuthUser{
+  displayName: string
+  profileImage: string
+  roles: roles[]
+}
+
 export interface User {
   id: number
-  username: string
+  username: string // wil pass from backend later
   firstName: string
   lastName: string
   displayName: string
   email: string
   phoneNumber: string
-  // password: string
   profileImage: string
   roles: roles[]
   reportedNews: News[]

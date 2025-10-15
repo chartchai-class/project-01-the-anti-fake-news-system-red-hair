@@ -1,7 +1,7 @@
 import type { AxiosInstance } from "axios";
 import axios from 'axios'
 import { defineStore } from 'pinia'
-import type { User } from "@/types";
+import type { AuthUser, User } from "@/types";
 
 const apiClient: AxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -15,7 +15,7 @@ const apiClient: AxiosInstance = axios.create({
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         token: null as string | null,
-        user: null as User | null
+        user: null as AuthUser | null
     }),
     getters: {
         currentUserName(): string {
@@ -29,6 +29,11 @@ export const useAuthStore = defineStore('auth', {
         },
         isAdmin(): boolean {
             return this.user?.roles.includes('ROLE_ADMIN') || false
+        },
+        isAuthenticated(): boolean {
+            const isAuthenticated = this.token !== null || this.token !== ""
+            console.log("isAuthenticated: " + isAuthenticated)
+            return isAuthenticated
         },
         authorizationHeader(): string {
             return `Bearer ${this.token}`
