@@ -25,6 +25,8 @@ export interface Comment {
 
 export type filterType = 'all' | 'fake' | 'not-fake'
 
+export type searchType = 'title' | 'description' | 'reporter'
+
 export type voteType = 'fake' | 'not-fake'
 
 export interface NewsState {

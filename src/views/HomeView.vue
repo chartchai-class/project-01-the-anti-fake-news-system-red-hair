@@ -7,6 +7,7 @@ import LoadingCircle from '@/components/LoadingCircle.vue'
 import NewsServices from '@/services/NewsServices'
 import type { News, filterType } from '@/types'
 import { useAuthStore } from '@/stores/auth'
+import SearchBar from '@/components/SearchBar.vue'
 
 const news = ref<News[] | null>(null)
 const totalNews = ref(0)
@@ -81,6 +82,8 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll) })
     </div>
 
     <FilterBar v-model:status="status" v-model:pageSize="pageSize" />
+
+    <SearchBar v-model:status="status" v-model:pageSize="pageSize"/>
 
     <div v-if="err" class="p-4 text-red-600">Error: {{ err }}</div>
     <div v-else-if="loading" class="p-6 text-gray-500 m-10 flex justify-center items-center">
