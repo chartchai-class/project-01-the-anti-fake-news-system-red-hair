@@ -58,8 +58,8 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll) })
 
 <template>
   <div class="container mx-auto px-4 py-6">
-    <div class="flex justify-between items-center grid grid-cols-3">
-      <h1 class="text-2xl font-bold mb-4">
+    <div class="flex justify-between items-center grid grid-cols-3 content-center mb-4">
+      <h1 class="text-2xl font-bold">
         <span class="text-[#AB0000]">N</span>EWS LIST
       </h1>
       <div></div>
@@ -83,9 +83,11 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll) })
       </div>
     </div>
 
-    <FilterBar v-model:status="status" v-model:pageSize="pageSize" />
-
-    <SearchBar v-model:searchBy="searchBy" v-model:keyword="keyword"/>
+    <div class="flex grid grid-cols-3">
+      <div class="content-center"><FilterBar v-model:status="status" v-model:pageSize="pageSize" /></div>
+      <div></div>
+      <div><SearchBar v-model:searchBy="searchBy" v-model:keyword="keyword"/></div>
+    </div>
 
     <div v-if="err" class="p-4 text-red-600">Error: {{ err }}</div>
     <div v-else-if="loading" class="p-6 text-gray-500 m-10 flex justify-center items-center">

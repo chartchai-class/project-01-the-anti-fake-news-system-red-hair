@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { User } from '@/types';
 import BaseSelect from './BaseSelect.vue';
-import { ref, computed } from 'vue';
-
+import { ref } from 'vue';
 
 const props = defineProps<{
     user: User

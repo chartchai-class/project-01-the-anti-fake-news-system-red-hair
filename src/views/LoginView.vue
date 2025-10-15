@@ -4,10 +4,9 @@ import * as yup from 'yup'
 import { useField, useForm } from 'vee-validate'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
-import { useMessageStore } from '@/stores/message.ts'
 import { RouterLink } from 'vue-router'
 const router = useRouter()
-const messageStore = useMessageStore()
+
 
 const validationSchema = yup.object({
     username: yup.string().required('The username is required'),

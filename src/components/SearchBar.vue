@@ -18,8 +18,8 @@ const keywordField = ref(props.keyword)
 </script>
 
 <template>
-    <div class="flex flex-wrap items-center gap-3 mb-4">
-        <div class="w-64">
+    <div class="flex flex-wrap items-center gap-3">
+        <div class="w-52">
             <BaseInput
                 v-model = "keywordField"
                 type="text"
@@ -28,8 +28,8 @@ const keywordField = ref(props.keyword)
                 />
         </div>
     
-        <div class="flex flex-wrap items-center gap-3 mb-4">
-            <label class="text-sm">Search By:</label>
+        <div class="flex flex-wrap items-center gap-3">
+            <label class="text-sm">By:</label>
             <select class="border rounded px-2 py-1"
                     :value="searchBy"
                     @change="emit('update:searchBy', ($event.target as HTMLSelectElement).value as any)">
