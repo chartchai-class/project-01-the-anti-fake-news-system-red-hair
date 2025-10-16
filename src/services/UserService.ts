@@ -11,6 +11,6 @@ export default {
         return apiClient.get('/profiles/me')
     },
     editUser(id: number, roles: string[]) {
-        return apiClient.put('users/' + id, { roles: roles })
+        return apiClient.put(`/users/profiles/${id}`, roles)
     }
 }

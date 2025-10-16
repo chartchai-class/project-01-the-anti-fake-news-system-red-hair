@@ -2,11 +2,10 @@
 
 const modelValue = defineModel()
 interface BaseSelectProps {
-    // label: string
     roles: ['ROLE_READER', 'ROLE_MEMBER', 'ROLE_ADMIN']
 }
 
-const props = withDefaults(defineProps<BaseSelectProps>(), { label: ''})
+const props = defineProps<BaseSelectProps>()
 </script>
 
 <template>
