@@ -17,9 +17,9 @@ export default {
       _page: page,
       _limit: perPage,
     }
-    if (status && status !== 'all') params.voteType = status
+    if (status && status !== 'all') params.status = status
     if (searchBy && searchBy !== 'title') params.searchBy = searchBy
-    if (keyword && keyword.trim() !== '') params.keyword = keyword // using like for partial match
+    if (keyword && keyword.trim() !== '') params.search = keyword // using like for partial match
     return apiClient.get<News[]>('news', { params })
   },
 
@@ -34,5 +34,5 @@ export default {
 
   deleteNews(id: number) { // currently not used
     return apiClient.delete(`/news/${id}`)
-  }
+  },
 }
