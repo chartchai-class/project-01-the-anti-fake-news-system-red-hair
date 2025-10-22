@@ -14,8 +14,8 @@ export default {
 
   getNewsByPage(page: number, perPage: number, status?: filterType, searchBy?: searchType, keyword?: string): Promise<AxiosResponse<News[]>> {
     const params: Record<string, string|number> = {
-      _page: page,
-      _limit: perPage,
+      page: page - 1,
+      size: perPage,
     }
     if (status && status !== 'all') params.status = status 
     if (searchBy) params.searchBy = searchBy // always send searchBy if exists
@@ -24,7 +24,7 @@ export default {
   },
 
   getNewsByKeyword(keyword: string, perPage: number, page: number): Promise<AxiosResponse<News[]>> {
-    return apiClient.get<News[]>('/news?title=' + keyword + '&_limit=' + perPage + '&_page=' + page)
+    return apiClient.get<News[]>('/news?title=' + keyword + '&size=' + perPage + '&page=' + (page - 1))
   },
 
   saveNews(news: any){
