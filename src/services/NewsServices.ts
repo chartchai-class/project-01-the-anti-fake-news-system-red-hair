@@ -17,8 +17,8 @@ export default {
       _page: page,
       _limit: perPage,
     }
-    if (status && status !== 'all') params.status = status
-    if (searchBy && searchBy !== 'title') params.searchBy = searchBy
+    if (status && status !== 'all') params.status = status 
+    if (searchBy) params.searchBy = searchBy // always send searchBy if exists
     if (keyword && keyword.trim() !== '') params.search = keyword // using like for partial match
     return apiClient.get<News[]>('news', { params })
   },
