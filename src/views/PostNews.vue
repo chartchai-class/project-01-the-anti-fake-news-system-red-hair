@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
-import AlterBox from '@/components/AlterBox.vue';
+import AlertBox from '@/components/AlertBox.vue';
 import NewsServices from '@/services/NewsServices';
 
 const news = ref({
@@ -24,7 +24,7 @@ user = JSON.parse(user ? user : '{}')
 const userId = user?.id || null;
 news.value.reporter = { id: userId };
 
-const alterBox = ref({
+const alertBox = ref({
     show: false,
     title: 'Notification',
     message: '',
@@ -32,12 +32,12 @@ const alterBox = ref({
 })
 
 function postNews(){
-    if (alterBox.value.show) return;
+    if (alertBox.value.show) return;
     else if (!news.value.title || !news.value.content) {
-        alterBox.value.show = true;
-        alterBox.value.title = 'Failed';
-        alterBox.value.message = 'Title and Content are required.';
-        alterBox.value.type = 'error';
+        alertBox.value.show = true;
+        alertBox.value.title = 'Failed';
+        alertBox.value.message = 'Title and Content are required.';
+        alertBox.value.type = 'error';
         return;
     }else{
         // can update newsDateTime here
@@ -45,18 +45,17 @@ function postNews(){
         .then(() => {
             console.log('News saved successfully');
             //can add more logic here
-
-            alterBox.value.show = true;
-            alterBox.value.title = 'Posted';
-            alterBox.value.message = 'News posted successfully!';
-            alterBox.value.type = 'success';
+            alertBox.value.show = true;
+            alertBox.value.title = 'Posted';
+            alertBox.value.message = 'News posted successfully!';
+            alertBox.value.type = 'success';
         })
         .catch((error) => {
             console.error('Error saving news:', error);
-            alterBox.value.show = true;
-            alterBox.value.title = 'Error';
-            alterBox.value.message = 'There was an error posting the news. Please try again.';
-            alterBox.value.type = 'error';
+            alertBox.value.show = true;
+            alertBox.value.title = 'Error';
+            alertBox.value.message = 'There was an error posting the news. Please try again.';
+            alertBox.value.type = 'error';
         })
         .finally(() => {
             clearForm();
@@ -68,8 +67,8 @@ function postNews(){
 const router = useRouter();
 
 function onModalConfirm(){
-    alterBox.value.show = false;
-    if(alterBox.value.type === 'success') {
+    alertBox.value.show = false;
+    if(alertBox.value.type === 'success') {
         router.push({ name: 'home' });
     }
 }
@@ -86,14 +85,14 @@ function clearForm(){
 </script>
 
 <template>
-    <AlterBox
-        :show="alterBox.show"
-        :title="alterBox.title"
-        :message="alterBox.message"
-        :type="alterBox.type"
+    <AlertBox
+        :show="alertBox.show"
+        :title="alertBox.title"
+        :message="alertBox.message"
+        :type="alertBox.type"
         confirmText="OK"
         @confirm="onModalConfirm"
-        @close="alterBox.show = false"
+        @close="alertBox.show = false"
     />
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex flex-col">
         <RouterLink :to="{ name: 'home' }" class="self-start">
