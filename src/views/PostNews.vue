@@ -2,14 +2,13 @@
 import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import AlterBox from '@/components/AlterBox.vue';
-import type { News } from '@/types';
 import NewsServices from '@/services/NewsServices';
 
-const news = ref<News>({
+const news = ref({
     id: 0,
     title: '',
     category: '',
-    reporter: '',
+    reporter: {},
     newsDateTime: new Date(),
     description: '',
     content: '',
@@ -19,6 +18,11 @@ const news = ref<News>({
     voteType: 'not-fake',
     comments: []
 });
+
+let user = localStorage.getItem('user')
+user = JSON.parse(user ? user : '{}')
+const userId = user?.id || null;
+news.value.reporter = { id: userId };
 
 const alterBox = ref({
     show: false,
@@ -117,12 +121,6 @@ function clearForm(){
                     <option value="Technology">Technology</option>
                     <option value="Health">Health</option>
                     </select>
-                </div>
-
-                <div>
-                    <label class="block mb-2 font-semibold text-gray-700">Reporter</label>
-                    <input v-model="news.reporter" type="text"
-                    class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 transition" />
                 </div>
 
                 <div>

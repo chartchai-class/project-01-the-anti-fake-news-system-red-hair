@@ -27,7 +27,7 @@ export default {
     return apiClient.get<News[]>('/news?title=' + keyword + '&_limit=' + perPage + '&_page=' + page)
   },
 
-  saveNews(news: News){
+  saveNews(news: any){
     const {id, ...newData} = news // will handle id as increment in backend
     return apiClient.post('/news', newData)
   },
