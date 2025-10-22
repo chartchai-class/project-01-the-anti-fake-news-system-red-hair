@@ -14,25 +14,25 @@ export default {
 
   getNewsByPage(page: number, perPage: number, status?: filterType, searchBy?: searchType, keyword?: string): Promise<AxiosResponse<News[]>> {
     const params: Record<string, string|number> = {
-      _page: page,
-      _limit: perPage,
+      page: page - 1,
+      size: perPage,
     }
-    if (status && status !== 'all') params.voteType = status
-    if (searchBy && searchBy !== 'title') params.searchBy = searchBy
-    if (keyword && keyword.trim() !== '') params.keyword = keyword // using like for partial match
+    if (status && status !== 'all') params.status = status 
+    if (searchBy) params.searchBy = searchBy // always send searchBy if exists
+    if (keyword && keyword.trim() !== '') params.search = keyword // using like for partial match
     return apiClient.get<News[]>('news', { params })
   },
 
   getNewsByKeyword(keyword: string, perPage: number, page: number): Promise<AxiosResponse<News[]>> {
-    return apiClient.get<News[]>('/news?title=' + keyword + '&_limit=' + perPage + '&_page=' + page)
+    return apiClient.get<News[]>('/news?title=' + keyword + '&size=' + perPage + '&page=' + (page - 1))
   },
 
-  saveNews(news: News){
+  saveNews(news: any){
     const {id, ...newData} = news // will handle id as increment in backend
     return apiClient.post('/news', newData)
   },
 
   deleteNews(id: number) { // currently not used
     return apiClient.delete(`/news/${id}`)
-  }
+  },
 }
