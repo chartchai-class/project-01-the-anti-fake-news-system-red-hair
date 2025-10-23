@@ -8,8 +8,15 @@ export default {
     return apiClient.get('/news')
   },
 
-  getNewsByAdmin() {
-    return apiClient.get('/admin/news')
+  getNewsByAdmin(page: number, perPage: number, status?: filterType, searchBy?: searchType, keyword?: string): Promise<AxiosResponse<News[]>> {
+    const params: Record<string, string|number> = {
+      page: page - 1,
+      size: perPage,
+    }
+    if (status && status !== 'all') params.status = status 
+    if (searchBy) params.searchBy = searchBy // always send searchBy if exists
+    if (keyword && keyword.trim() !== '') params.search = keyword // using like for partial match
+    return apiClient.get('/admin/news', { params })
   },
 
   getNewsById(id: number) {

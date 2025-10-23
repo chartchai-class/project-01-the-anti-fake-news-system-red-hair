@@ -2,25 +2,46 @@
 import { type Comment } from '@/types'
 import { useAuthStore } from '@/stores/auth'
 import CommentService from '@/services/CommentService';
+import { useNewsListStore } from '@/stores/news'
 const authStore = useAuthStore()
 const props = defineProps<{
   comment: Comment
 }>()
+const newsStore = useNewsListStore();
 
 function toggleDelete() {
   const currentComment = props.comment
   if (!currentComment) return // safely exit if null
 
-  const newStatus = !currentComment.isDeleted
+  const updatedCommentStatus = !currentComment.isDeleted
+  tempUpdateStatusInNewsStore(currentComment.voteType, updatedCommentStatus)
 
-  CommentService.toggleDeleteComment(currentComment.id, newStatus)
+  CommentService.toggleDeleteComment(currentComment.id, updatedCommentStatus)
     .then(() => {
-      currentComment.isDeleted = newStatus
+      currentComment.isDeleted = updatedCommentStatus
     })
     .catch((error) => {
       console.error('Failed to toggle delete:', error)
       return { name: 'news-detail' }
   })
+}
+
+function tempUpdateStatusInNewsStore(commentStatus: string, updatedDeleted: boolean){
+  if(newsStore.news){
+    if(commentStatus == 'fake' && !updatedDeleted){
+      newsStore.news.fakeCount += 1
+    }else if(commentStatus == 'fake' && updatedDeleted){
+      newsStore.news.fakeCount -= 1
+    }else if(commentStatus == 'not-fake' && !updatedDeleted){
+      newsStore.news.notFakeCount += 1
+    }else if(commentStatus == 'not-fake' && updatedDeleted){
+      newsStore.news.notFakeCount -= 1
+    }
+
+    newsStore.news.voteType= newsStore.news?.fakeCount>newsStore.news?.notFakeCount ? 'fake' : 'not-fake'
+  }
+
+  
 }
 </script>
 

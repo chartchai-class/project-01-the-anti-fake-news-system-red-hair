@@ -122,7 +122,8 @@ watch(
           <RouterLink :to="{ name: 'view-comments'}">
             <button @click="showComments = true" 
             class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]">
-                  Show Comments ({{ news.comments.length }})
+              <span v-if="authStore.isAdmin">Show Comments ({{ news.comments.length }})</span>
+              <span v-else>Show Comments ({{ news.comments.filter(c => !c.isDeleted).length }})</span>
             </button>
           </RouterLink>
           <div class="flex flex-col gap-2">
