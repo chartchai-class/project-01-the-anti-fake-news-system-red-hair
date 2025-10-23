@@ -69,12 +69,13 @@ export const useAuthStore = defineStore('auth', {
             this.token = token
             this.user = user
         },
-        register(username: string, firstName: string, lastName: string, email: string, password: string, profileImage: string) {
+        register(username: string, firstName: string, lastName: string, displayName: string, email: string, password: string, profileImage: string) {
             return apiClient
             .post('/api/v1/auth/register', {
                 username: username,
                 firstName: firstName,
                 lastName: lastName,
+                displayName: displayName,
                 email: email,
                 password: password,
                 profileImage: profileImage

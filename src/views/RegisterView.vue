@@ -21,6 +21,7 @@ const { errors, handleSubmit } = useForm({
         username: '',
         firstname: '',
         lastname: '',
+        displayName: '',
         email: '', 
         password: '',
         profileImage: ''
@@ -33,9 +34,10 @@ const { value: lastname } = useField<string>('lastname')
 const { value: email }  = useField<string>('email')
 const { value: password } = useField<string>('password')
 const { value: profileImage } = useField<string>('profileImage')
+const { value: displayName } = useField<string>('displayName')
 
 const onSubmit = handleSubmit((values) => {
-    authStore.register(values. username, values.firstname, values.lastname, values.email, values.password, values.profileImage)
+    authStore.register(values. username, values.firstname, values.lastname, values.displayName, values.email, values.password, values.profileImage)
     .then(() => {
         router.push({ name: 'home' })
     }).catch(() => {
@@ -67,6 +69,10 @@ const onSubmit = handleSubmit((values) => {
                 <div>
                     <label for="lastname" class="block text-sm font-medium leading-6 text-gray-900">LastName</label>
                     <InputText type="text" v-model="lastname" placeholder="LastName" :error = "errors['lastname']"/>
+                </div>
+                <div>
+                    <label for="displayName" class="block text-sm font-medium leading-6 text-gray-900">Display Name</label>
+                    <InputText type="text" v-model="displayName" placeholder="DisplayName" :error = "errors['displayName']"/>
                 </div>
                 <div>
                     <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
