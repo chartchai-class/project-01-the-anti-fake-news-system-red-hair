@@ -10,10 +10,13 @@ const router = useRouter()
 const messageStore = useMessageStore()
 
 const validationSchema = yup.object({
+    username: yup.string().required('The username is required').matches(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
     email: yup.string().required('The email is required'),
     password: yup.string().required('The password is required'),
-    firstname: yup.string().required('The email is required'),
-    lastname: yup.string().required('The email is required'),
+    confirmPassword: yup.string().oneOf([yup.ref('password')], 'Passwords must match').required('Please confirm your password'),
+    firstname: yup.string().required('The firstname is required'),
+    lastname: yup.string().required('The lastname is required'),
+    displayName: yup.string().required('The displayName is required')
 })
 const { errors, handleSubmit } = useForm({
     validationSchema,
@@ -24,6 +27,7 @@ const { errors, handleSubmit } = useForm({
         displayName: '',
         email: '', 
         password: '',
+        confirmPassword: '',
         profileImage: ''
     }
 })
@@ -33,6 +37,7 @@ const { value: firstname } = useField<string>('firstname')
 const { value: lastname } = useField<string>('lastname')
 const { value: email }  = useField<string>('email')
 const { value: password } = useField<string>('password')
+const { value: confirmPassword } = useField<string>('confirmPassword')
 const { value: profileImage } = useField<string>('profileImage')
 const { value: displayName } = useField<string>('displayName')
 
@@ -88,7 +93,7 @@ const onSubmit = handleSubmit((values) => {
                     <div class="flex items-center justify-between">
                         <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Confirm Password</label>
                     </div>
-                    <InputText type="password" v-model="password" placeholder="Password" :error="errors['password']"/>
+                    <InputText type="password" v-model="confirmPassword" placeholder="Confirm Password" :error="errors['confirmPassword']"/>
                 </div>
                 <SingleImageUpload type="image" v-model="profileImage" :errors="errors['profileImage']"/>
                 <div>
