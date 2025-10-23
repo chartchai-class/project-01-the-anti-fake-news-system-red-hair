@@ -14,7 +14,7 @@ const emit = defineEmits<{
 <template>
   <div class="flex flex-wrap items-center gap-3">
     <label class="text-sm">FILTER:</label>
-    <select class="border rounded px-2 py-1"
+    <select class="border rounded py-1"
             :value="status"
             @change="emit('update:status', ($event.target as HTMLSelectElement).value as any)">
       <option value="all">All</option>
@@ -23,7 +23,7 @@ const emit = defineEmits<{
     </select>
 
     <label class="text-sm ml-4">PAGE-SIZE:</label>
-    <select class="border rounded px-5 py-1"
+    <select class="border rounded px-5 py-1 w-20"
             :value="pageSize"
             @change="emit('update:pageSize', Number(($event.target as HTMLSelectElement).value))">
       <option :value="6">6</option>

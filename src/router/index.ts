@@ -12,6 +12,9 @@ import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import UserManageView from '@/views/UserManageView.vue'
+import { useCommentListStore } from '@/stores/comment'
+import CommentService from '@/services/CommentService'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

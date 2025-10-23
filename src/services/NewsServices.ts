@@ -8,6 +8,17 @@ export default {
     return apiClient.get('/news')
   },
 
+  getNewsByAdmin(page: number, perPage: number, status?: filterType, searchBy?: searchType, keyword?: string): Promise<AxiosResponse<News[]>> {
+    const params: Record<string, string|number> = {
+      page: page - 1,
+      size: perPage,
+    }
+    if (status && status !== 'all') params.status = status 
+    if (searchBy) params.searchBy = searchBy // always send searchBy if exists
+    if (keyword && keyword.trim() !== '') params.search = keyword // using like for partial match
+    return apiClient.get('/admin/news', { params })
+  },
+
   getNewsById(id: number) {
     return apiClient.get(`/news/${id}`)
   },
@@ -32,7 +43,7 @@ export default {
     return apiClient.post('/news', newData)
   },
 
-  deleteNews(id: number) { // currently not used
-    return apiClient.delete(`/news/${id}`)
+  toggleSoftDeleteNews(id: number, isDeleted: boolean) {
+    return apiClient.post(`/news/${id}/toggle-delete`, { isDeleted })
   },
 }

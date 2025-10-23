@@ -35,7 +35,12 @@ onMounted(() => {
   watchEffect(() =>{
     loading.value = true
     err.value = null
-    NewsServices.getNewsByPage(page.value, pageSize.value, status.value, searchBy.value, keyword.value)
+
+    const fetchNews = authStore.isAdmin
+      ? NewsServices.getNewsByAdmin
+      : NewsServices.getNewsByPage
+
+    fetchNews(page.value, pageSize.value, status.value, searchBy.value, keyword.value)
       .then((response) => {
         news.value = response.data
         totalNews.value = response.headers['x-total-count'] ? parseInt(response.headers['x-total-count']) : 0

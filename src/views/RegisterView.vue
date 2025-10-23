@@ -6,14 +6,18 @@ import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '@/stores/message.ts'
 import SingleImageUpload from '@/components/SingleImageUpload.vue'
+import AlertBox from '@/components/AlertBox.vue'
+import { ref } from 'vue'
 const router = useRouter()
-const messageStore = useMessageStore()
 
 const validationSchema = yup.object({
+    username: yup.string().required('The username is required').matches(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
     email: yup.string().required('The email is required'),
     password: yup.string().required('The password is required'),
-    firstname: yup.string().required('The email is required'),
-    lastname: yup.string().required('The email is required'),
+    confirmPassword: yup.string().oneOf([yup.ref('password')], 'Passwords must match').required('Please confirm your password'),
+    firstname: yup.string().required('The firstname is required'),
+    lastname: yup.string().required('The lastname is required'),
+    displayName: yup.string().required('The displayName is required')
 })
 const { errors, handleSubmit } = useForm({
     validationSchema,
@@ -21,8 +25,10 @@ const { errors, handleSubmit } = useForm({
         username: '',
         firstname: '',
         lastname: '',
+        displayName: '',
         email: '', 
         password: '',
+        confirmPassword: '',
         profileImage: ''
     }
 })
@@ -32,22 +38,50 @@ const { value: firstname } = useField<string>('firstname')
 const { value: lastname } = useField<string>('lastname')
 const { value: email }  = useField<string>('email')
 const { value: password } = useField<string>('password')
+const { value: confirmPassword } = useField<string>('confirmPassword')
 const { value: profileImage } = useField<string>('profileImage')
+const { value: displayName } = useField<string>('displayName')
 
 const onSubmit = handleSubmit((values) => {
-    authStore.register(values. username, values.firstname, values.lastname, values.email, values.password, values.profileImage)
+    authStore.register(values. username, values.firstname, values.lastname, values.displayName, values.email, values.password, values.profileImage)
     .then(() => {
-        router.push({ name: 'home' })
+        alertBox.value.show = true
+        alertBox.value.title = 'Register Success'
+        alertBox.value.message = 'Your account has been created successfully!'
+        alertBox.value.type = 'success'
     }).catch(() => {
-        messageStore.updateMessage('could not login')
-        setTimeout(() => {
-            messageStore.resetMessage()
-        }, 3000)
+        alertBox.value.show = true
+        alertBox.value.title = 'Error'
+        alertBox.value.message = 'Registration failed. Please try again.'
+        alertBox.value.type = 'error'
     })
 })
+
+const alertBox = ref({
+  show: false,
+  title: 'Notification',
+  message: '',
+  type: 'success' as 'success' | 'error'
+})
+
+function onModalConfirm() {
+  alertBox.value.show = false
+  if (alertBox.value.type === 'success') {
+    router.push({ name: 'home' })
+  }
+}
 </script>
 
 <template>
+    <AlertBox
+    :show="alertBox.show"
+    :title="alertBox.title"
+    :message="alertBox.message"
+    :type="alertBox.type"
+    confirmText="OK"
+    @confirm="onModalConfirm"
+    @close="alertBox.show = false"
+    />
     <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-6 lg:px:8">
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
             <!-- <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company"> -->
@@ -69,6 +103,10 @@ const onSubmit = handleSubmit((values) => {
                     <InputText type="text" v-model="lastname" placeholder="LastName" :error = "errors['lastname']"/>
                 </div>
                 <div>
+                    <label for="displayName" class="block text-sm font-medium leading-6 text-gray-900">Display Name</label>
+                    <InputText type="text" v-model="displayName" placeholder="DisplayName" :error = "errors['displayName']"/>
+                </div>
+                <div>
                     <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
                     <InputText type="text" v-model="email" placeholder="Email address" :error = "errors['email']"/>
                 </div>
@@ -82,7 +120,7 @@ const onSubmit = handleSubmit((values) => {
                     <div class="flex items-center justify-between">
                         <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Confirm Password</label>
                     </div>
-                    <InputText type="password" v-model="password" placeholder="Password" :error="errors['password']"/>
+                    <InputText type="password" v-model="confirmPassword" placeholder="Confirm Password" :error="errors['confirmPassword']"/>
                 </div>
                 <SingleImageUpload type="image" v-model="profileImage" :errors="errors['profileImage']"/>
                 <div>

@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import type { News } from '@/types'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+const authStore = useAuthStore()
 
 const router = useRouter()
 
@@ -19,6 +21,15 @@ function goNewsDetail() {
   <article class="rounded-xl border bg-white overflow-hidden shadow-md lg:mx-2 border-white">
     <!-- img + skeleton/placeholder -->
     <div class="relative w-full h-48 bg-gray-100 overflow-hidden">
+
+      <div v-if="authStore.isAdmin"
+        class="absolute top-2 right-2 z-10 text-xs px-2 py-1 rounded-md font-semibold"
+        :class="item.isDeleted
+          ? 'bg-red-600 text-white'
+          : 'bg-green-600 text-white'"
+      >
+        {{ item.isDeleted ? 'Deleted' : 'Active' }}
+      </div>
       <!-- realimg -->
       <img
         @click="goNewsDetail"
