@@ -36,7 +36,7 @@ export default {
     return apiClient.post('/news', newData)
   },
 
-  toggleSoftDeleteNews(id: number, isDeleted: boolean) { // currently not used
+  toggleSoftDeleteNews(id: number, isDeleted: boolean) {
     return apiClient.post(`/news/${id}/toggle-delete`, { isDeleted })
   },
 }
