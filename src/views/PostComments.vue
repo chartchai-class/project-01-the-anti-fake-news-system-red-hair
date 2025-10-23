@@ -6,6 +6,7 @@ import CommentService from '@/services/CommentService';
 import { useNewsListStore } from '@/stores/news'
 import NewsServices from '@/services/NewsServices';
 import type { News } from '@/types';
+import SingleImageUpload from '@/components/SingleImageUpload.vue';
 // Props: need the related newsId
 const props = defineProps<{ newsId: number }>()
 const router = useRouter()
@@ -149,12 +150,13 @@ function clearForm() {
 
                 <!-- Image URL -->
                 <div>
-                    <label class="block mb-2 font-semibold text-gray-700">Image URL (optional)</label>
-                    <input v-model="comment.image" type="text" placeholder="Enter image URL"
+                    <label class="block mb-2 font-semibold text-gray-700">Image Upload</label>
+                    <!-- <input v-model="comment.image" type="text" placeholder="Enter image URL"
                     class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 transition" />
                     <div v-if="comment.image.trim()" class="mt-3 flex justify-center">
                     <img :src="comment.image" alt="Preview" class="max-h-40 rounded-lg border shadow" />
-                    </div>
+                    </div> -->
+                    <SingleImageUpload type="image" v-model="comment.image"/>
                 </div>
 
                 <!-- Submit -->

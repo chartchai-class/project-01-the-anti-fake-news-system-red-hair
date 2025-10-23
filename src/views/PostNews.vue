@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import AlertBox from '@/components/AlertBox.vue';
 import NewsServices from '@/services/NewsServices';
+import SingleImageUpload from '@/components/SingleImageUpload.vue';
 
 const news = ref({
     id: 0,
@@ -135,12 +136,14 @@ function clearForm(){
                 </div>
 
                 <div>
-                    <label class="block mb-2 font-semibold text-gray-700">Image URL</label>
+                    <!-- 
                     <input v-model="news.image" type="text" placeholder="Enter image URL"
                     class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 transition" />
                     <div v-if="news.image" class="mt-3 flex justify-center">
                         <img :src="news.image" alt="Preview" class="max-h-48 rounded-lg border shadow" />
-                    </div>
+                    </div> -->
+                    <label class="block mb-2 font-semibold text-gray-700">Image Upload</label>
+                    <SingleImageUpload type="image" v-model="news.image"/>
                 </div>
 
                 <button type="submit"

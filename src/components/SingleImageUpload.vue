@@ -22,7 +22,11 @@
     const uploadUrl = ref(import.meta.env.VITE_UPLOAD_URL);
 
     const onChanged = (files: any[]) => {
-        emit('update:modelValue', convertMediaToString(files));
+        if (files.length === 0) {
+            emit('update:modelValue', ''); // clear image when removed
+        } else {
+            emit('update:modelValue', convertMediaToString(files));
+        }
     }
 </script>
 
