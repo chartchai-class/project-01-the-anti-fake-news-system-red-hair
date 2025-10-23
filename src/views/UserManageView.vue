@@ -13,7 +13,7 @@ const route = useRoute()
 const router = useRouter()
 
 const page = computed(() => Number(route.query.page) || 1)
-const limit = ref(Number(route.query.limit) || 2)
+const limit = ref(Number(route.query.limit) || 5)
 
 function updateLimit(newLimit: number) {
     router.push({
@@ -52,11 +52,9 @@ onMounted(() => {
         <div class="flex flex-col">
             <label class="m-2" for="limit-select">User Per Page:</label>
             <select id="limit-select" v-model.number="limit" @change="updateLimit(limit)" class="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-500">
-                <option :value="1">1</option>
-                <option :value="2">2</option>
-                <option :value="3">3</option>
-                <option :value="4">4</option>
                 <option :value="5">5</option>
+                <option :value="10">10</option>
+                <option :value="15">15</option>
             </select>
         </div>
         <!-- Dropdown for selecting number of events per page -->

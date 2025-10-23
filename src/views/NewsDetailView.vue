@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useNewsListStore } from '@/stores/news'
 import { storeToRefs } from 'pinia'
+import AlertBox from '@/components/AlertBox.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -32,10 +33,19 @@ function toggleDelete() {
   NewsServices.toggleSoftDeleteNews(currentNews.id, newStatus)
     .then(() => {
       currentNews.isDeleted = newStatus
+      alertBox.value.show = true
+      alertBox.value.title = 'Success'
+      alertBox.value.type = 'success'
+      alertBox.value.message = newStatus
+        ? 'News deleted successfully.'
+        : 'News restored successfully.'
     })
     .catch((error) => {
       console.error('Failed to toggle delete:', error)
-      err.value = 'Failed to update delete status.'
+      alertBox.value.show = true
+      alertBox.value.title = 'Error'
+      alertBox.value.message = 'Failed to update delete status.'
+      alertBox.value.type = 'error'
     })
 }
 
@@ -51,9 +61,29 @@ watch(
     }
   }
 )
+
+const alertBox = ref({
+  show: false,
+  title: 'Notification',
+  message: '',
+  type: 'success' as 'success' | 'error'
+})
+
+function onModalConfirm() {
+  alertBox.value.show = false
+}
 </script>
 
 <template>
+  <AlertBox
+  :show="alertBox.show"
+  :title="alertBox.title"
+  :message="alertBox.message"
+  :type="alertBox.type"
+  confirmText="OK"
+  @confirm="onModalConfirm"
+  @close="alertBox.show = false"
+  />
   <button @click="goHome" class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 mt-6 mb-4 shadow">Back</button>
   <div class="container mx-auto px-4 py-6">
     <div v-if="err" class="text-red-600">{{ err }}</div>

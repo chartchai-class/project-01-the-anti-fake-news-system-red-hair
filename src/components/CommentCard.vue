@@ -3,11 +3,27 @@ import { type Comment } from '@/types'
 import { useAuthStore } from '@/stores/auth'
 import CommentService from '@/services/CommentService';
 import { useNewsListStore } from '@/stores/news'
+import AlertBox from '@/components/AlertBox.vue'
+import { useRouter } from 'vue-router';
+import { ref } from 'vue';
 const authStore = useAuthStore()
 const props = defineProps<{
   comment: Comment
 }>()
 const newsStore = useNewsListStore();
+
+const alertBox = ref({
+  show: false,
+  title: 'Notification',
+  message: '',
+  type: 'success' as 'success' | 'error'
+})
+
+const router = useRouter()
+
+function onModalConfirm() {
+  alertBox.value.show = false
+}
 
 function toggleDelete() {
   const currentComment = props.comment
@@ -19,9 +35,20 @@ function toggleDelete() {
   CommentService.toggleDeleteComment(currentComment.id, updatedCommentStatus)
     .then(() => {
       currentComment.isDeleted = updatedCommentStatus
+
+      alertBox.value.show = true
+      alertBox.value.title = 'Success'
+      alertBox.value.type = 'success'
+      alertBox.value.message = updatedCommentStatus
+        ? 'Comment deleted successfully.'
+        : 'Comment restored successfully.'
     })
     .catch((error) => {
       console.error('Failed to toggle delete:', error)
+      alertBox.value.show = true
+      alertBox.value.title = 'Error'
+      alertBox.value.message = 'Failed to update comment status.'
+      alertBox.value.type = 'error'
       return { name: 'news-detail' }
   })
 }
@@ -46,6 +73,15 @@ function tempUpdateStatusInNewsStore(commentStatus: string, updatedDeleted: bool
 </script>
 
 <template>
+  <AlertBox
+  :show="alertBox.show"
+  :title="alertBox.title"
+  :message="alertBox.message"
+  :type="alertBox.type"
+  confirmText="OK"
+  @confirm="onModalConfirm"
+  @close="alertBox.show = false"
+  />
   <div class="form flex flex-col max-w-xl mx-auto p-4 border rounded-xl shadow bg-white my-1">
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between text-sm text-gray-500 mb-2">
       <span class="font-bold text-gray-800">{{ comment.author }}</span>
