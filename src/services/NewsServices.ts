@@ -8,6 +8,10 @@ export default {
     return apiClient.get('/news')
   },
 
+  getNewsByAdmin() {
+    return apiClient.get('/admin/news')
+  },
+
   getNewsById(id: number) {
     return apiClient.get(`/news/${id}`)
   },
@@ -32,7 +36,7 @@ export default {
     return apiClient.post('/news', newData)
   },
 
-  deleteNews(id: number) { // currently not used
-    return apiClient.delete(`/news/${id}`)
+  toggleSoftDeleteNews(id: number, isDeleted: boolean) { // currently not used
+    return apiClient.post(`/news/${id}/toggle-delete`, { isDeleted })
   },
 }

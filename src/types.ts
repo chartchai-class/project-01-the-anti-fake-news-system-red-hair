@@ -11,6 +11,7 @@ export interface News {
   notFakeCount: number
   voteType: voteType
   comments: Comment[]
+  isDeleted: boolean
 }
 
 export interface Comment {
@@ -21,6 +22,7 @@ export interface Comment {
   image: string //url
   voteType: voteType
   commentDateTime: Date
+  isDeleted: boolean
 }
 
 export type filterType = 'all' | 'fake' | 'not-fake'

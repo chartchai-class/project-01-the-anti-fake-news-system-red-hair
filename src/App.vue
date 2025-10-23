@@ -26,7 +26,7 @@ if(token && user) {
 </script>
 
 <template>
-  <div class="bg-gradient-to-br from-gray-50 to-gray-200">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200">
     <header class="sticky top-0 z-50 bg-black/95 border-b">
       <div class="text-center animate-fade bg-red-500" v-if="message">
         <h4>{{ message }}</h4>

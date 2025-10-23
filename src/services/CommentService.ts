@@ -13,6 +13,22 @@ export default {
     return apiClient.post('/comments', commentData)
   },
 
+  getCommentsByNewsIdByAdmin(newsId: number, page = 1, perPage = 10) {
+    const params = {
+      page: page - 1,
+      size: perPage,
+    }
+    return apiClient.get(`/admin/news/${newsId}/comments`, { params })
+  },
+
+  getCommentsByNewsId(newsId: number, page = 1, perPage = 10) {
+    const params = {
+      page: page - 1,
+      size: perPage,
+    }
+    return apiClient.get(`/news/${newsId}/comments`, { params })
+  },
+
   // Only vote without comment
   vote(newsId: number, voteType: 'fake' | 'not-fake') {
     return apiClient.post(`/news/${newsId}/vote`, { voteType })
@@ -21,5 +37,9 @@ export default {
   saveComment(newsId: number, authorId: number, comment: any){
     const {id, ...newData} = comment // will handle id as increment in backend
     return apiClient.post(`/news/${newsId}/comments`, newData, { params: { authorId }})
+  },
+
+  toggleDeleteComment(id: number, isDeleted: boolean) {
+    return apiClient.post(`/comments/${id}/toggle-delete`, { isDeleted })
   }
 }
