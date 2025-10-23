@@ -64,3 +64,8 @@ export interface MessageState {
 export interface UserState {
     user: User | null
 }
+
+export interface CommentState {
+    commentList: Comment[] | null
+    totalComments: number
+} 
