@@ -55,15 +55,22 @@ if(token && user) {
           <ul v-else class="flex flex-wrap justify-center items-center space-x-6">
             <li>
               <router-link to="/profile" class="flex items-center text-white hover:text-red-400">
+                <!-- Always show the image (with red circle) -->
                 <div class="w-7 h-7 flex items-center justify-center rounded-full bg-[#AB0000]">
                   <span v-if="authStore.currentUserImage">
-                    <img :src="authStore.currentUserImage" alt="Profile" class="w-7 h-7 rounded-full object-cover"/>
+                    <img
+                      :src="authStore.currentUserImage"
+                      alt="Profile"
+                      class="w-7 h-7 rounded-full object-cover"
+                    />
                   </span>
-                  <span v-else >
-                      <SvgIcon class="w-5 h-5 fill-white" type="mdi" :path="mdiAccount" />
+                  <span v-else>
+                    <SvgIcon class="w-5 h-5 fill-white" type="mdi" :path="mdiAccount" />
                   </span>
                 </div>
-                <span class="ml-2">{{ authStore.currentUserName }}</span>
+
+                <!-- Username: hidden on mobile, visible from sm and up -->
+                <span class="ml-2 hidden sm:inline">{{ authStore.currentUserName }}</span>
               </router-link>
             </li>
           </ul>

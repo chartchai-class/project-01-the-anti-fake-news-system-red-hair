@@ -18,10 +18,10 @@ const keywordField = ref(props.keyword)
 
 
 <template>
-  <div class="p-4 w-96 text-gray-600 dark:text-gray-300 outline-none focus:outline-none">
+  <div class="py-4 w-80 sm:w-96 w-fill text-gray-600 outline-none focus:outline-none">
     <div class="relative flex items-center">
       <!-- Filter Select -->
-      <select class="bg-white dark:bg-gray-800 h-10 px-5 w-56 rounded-l-full text-sm focus:outline-none focus:ring-0 focus:shadow-none border-2 border-gray-500 dark:border-gray-600 border-r-0 cursor-pointer"
+      <select class="appearance-none leading-none align-middle bg-white-800 h-8 sm:h-10 px-5 w-28 sm:w-48 rounded-l-full text-[11px] sm:text-sm focus:outline-none focus:ring-0 focus:shadow-none border-2 border-gray-500 border-r-0 cursor-pointer"
         :value="searchBy"
         @change="emit('update:searchBy', ($event.target as HTMLSelectElement).value as searchType)"
       >
@@ -36,16 +36,16 @@ const keywordField = ref(props.keyword)
         type="text"
         placeholder="Search"
         @change="emit('update:keyword', ($event.target as HTMLSelectElement).value as any)"
-        class="bg-white dark:bg-gray-800 h-10 flex px-5 w-full rounded-r-full text-sm focus:outline-none focus:ring-0 focus:shadow-none border-2 border-l-0 border-gray-500 dark:border-gray-600"
+        class="leading-none align-middle bg-white-800 h-8 sm:h-10 flex px-5 w-32 sm:w-full rounded-r-full text-[11px] sm:text-sm focus:outline-none focus:ring-0 focus:shadow-none border-2 border-l-0 border-gray-500"
       />
 
       <!-- Search Button -->
       <button
         type="button"
-        class="absolute inset-y-0 right-0 mr-2 flex items-center px-2"
+        class="absolute inset-y-0 right-20 sm:right-0 mr-2 flex items-center px-2"
       >
         <svg
-          class="h-4 w-4 fill-current dark:text-white"
+          class="h-3 w-3 sm:h-4 sm:w-4 fill-current dark:text-black"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 56.966 56.966"
         >

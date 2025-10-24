@@ -18,7 +18,7 @@ function goNewsDetail() {
 </script>
 
 <template>
-  <article class="rounded-xl border bg-white overflow-hidden shadow-md lg:mx-2 border-white">
+  <article class="rounded-xl border bg-white overflow-hidden shadow-md border-white">
     <!-- img + skeleton/placeholder -->
     <div class="relative w-full h-48 bg-gray-100 overflow-hidden">
 
