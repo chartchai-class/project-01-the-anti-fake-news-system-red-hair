@@ -45,7 +45,7 @@ onMounted(() => {
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex flex-col items-center">
         <!-- Back button -->
         <RouterLink :to="{ name: 'home' }" class="self-start">
-            <button class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 mt-6 mb-4 shadow">Back</button>
+            <button class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 sm:ml-32 mt-6 mb-4 shadow">Back</button>
         </RouterLink>
         <h1 class="text-3xl font-bold text-center mb-6 text-black">User Management</h1>
 

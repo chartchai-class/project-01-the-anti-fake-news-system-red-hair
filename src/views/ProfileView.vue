@@ -39,7 +39,7 @@ function editProfile() {
     
     <!-- Back button -->
     <RouterLink :to="{ name: 'home' }" class="self-start">
-        <button class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 mt-6 mb-4 shadow">Back</button>
+        <button class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 sm:ml-32 mt-6 mb-4 shadow">Back</button>
     </RouterLink>
     
     <!-- Profile Card -->

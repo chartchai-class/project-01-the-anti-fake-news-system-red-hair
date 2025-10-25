@@ -33,9 +33,9 @@ const router = createRouter({
       path: '/news/:id',
       name: 'news-detail',
       component: NewsDetailView,
-      props: true,
+      props: route => ({ id: Number(route.params.id) }),
       beforeEnter: (to) => {
-        const id = parseInt(to.params.id as string)
+        const id = Number(to.params.id)
         const newsStore = useNewsListStore()
         return NewsServices.getNewsById(id)
           .then((response) => {
@@ -52,7 +52,7 @@ const router = createRouter({
           path: 'view-comments',
           name: 'view-comments',
           component: CommentListView,
-          props: true
+          props: route => ({ id: Number(route.params.id) })
         },
         {
           path: 'post-comment',

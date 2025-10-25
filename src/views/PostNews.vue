@@ -97,10 +97,10 @@ function clearForm(){
     />
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex flex-col">
         <RouterLink :to="{ name: 'home' }" class="self-start">
-            <button class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 mt-6 mb-4 shadow">Back</button>
+            <button class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 sm:ml-32 mt-6 mb-4 shadow">Back</button>
         </RouterLink>
-        <div class="flex flex-col items-center justify-center flex-1">
-            <div class="w-full max-w-lg bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+        <div class="flex flex-col items-center justify-center flex-1 px-5 pb-10 sm:px-0">
+            <div class="w-full max-w-lg bg-white rounded-2xl shadow-lg p-5 sm:p-8 border border-gray-200">
                 <h1 class="text-3xl font-bold text-center mb-6 text-black"><span class="text-[#AB0000]">P</span>ost News</h1>
                 <form @submit.prevent="postNews" class="space-y-5">
 
@@ -146,8 +146,10 @@ function clearForm(){
                     <SingleImageUpload type="image" v-model="news.image"/>
                 </div>
 
-                <button type="submit"
-                    class="w-full bg-black text-white py-3 rounded-lg font-bold text-lg hover:bg-[#720000] transition shadow">Post</button>
+                <div class="grid justify-center">
+                    <button type="submit"
+                    class="w-40 bg-black text-white py-2 sm:py-3 rounded-full font-bold text-md sm:text-lg hover:bg-[#720000] transition shadow">Post</button>
+                </div>
                 </form>
             </div>
         </div>

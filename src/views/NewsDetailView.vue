@@ -102,7 +102,7 @@ function onModalConfirm() {
   @confirm="onModalConfirm"
   @close="alertBox.show = false"
   />
-  <button @click="goHome" class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 mt-6 mb-4 shadow">Back</button>
+  <button @click="goHome" class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 sm:ml-32 mt-6 mb-4 shadow">Back</button>
   <div class="container mx-auto px-4 py-6">
     <div v-if="err" class="text-red-600">{{ err }}</div>
     <div v-else-if="loading" class="text-gray-500">Loading…</div>
