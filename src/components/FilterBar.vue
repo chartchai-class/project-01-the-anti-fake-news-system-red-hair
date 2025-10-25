@@ -12,7 +12,7 @@ const emit = defineEmits<{
 
 
 <template>
-  <div class="flex flex-wrap items-center gap-3">
+  <div class="flex flex-wrap items-center gap-2 sm:gap-3">
     <label class="text-[11px] sm:text-sm">FILTER:</label>
     <select class="text-[11px] sm:text-base border-2 border-gray-500 rounded-full py-1 h-8 sm:h-10 appearance-none leading-none align-middle"
             :value="status"
