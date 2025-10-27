@@ -5,10 +5,10 @@ import { useRouter } from 'vue-router'
 import CommentService from '@/services/CommentService';
 import { useNewsListStore } from '@/stores/news'
 import NewsServices from '@/services/NewsServices';
-import type { News } from '@/types';
+import type { AuthUser, News } from '@/types';
 import SingleImageUpload from '@/components/SingleImageUpload.vue';
 // Props: need the related newsId
-const props = defineProps<{ newsId: number }>()
+const props = defineProps<{ newsId: number, news?: News }>()
 const router = useRouter()
 const newsStore = useNewsListStore();
 const comment = ref({
@@ -21,9 +21,9 @@ const comment = ref({
   commentDateTime: new Date()
 });
 
-let user = localStorage.getItem('user')
-user = JSON.parse(user ? user : '{}')
-const userId = user?.id || null;
+const user = localStorage.getItem('user')
+const parseUser = JSON.parse(user ? user : '{}') as AuthUser
+const userId = parseUser.id;
 comment.value.author = { id: userId };
 
 const alertBox = ref({

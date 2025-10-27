@@ -4,6 +4,7 @@ import { RouterLink, useRouter } from 'vue-router';
 import AlertBox from '@/components/AlertBox.vue';
 import NewsServices from '@/services/NewsServices';
 import SingleImageUpload from '@/components/SingleImageUpload.vue';
+import type { AuthUser } from '@/types';
 
 const news = ref({
     id: 0,
@@ -20,9 +21,9 @@ const news = ref({
     comments: []
 });
 
-let user = localStorage.getItem('user')
-user = JSON.parse(user ? user : '{}')
-const userId = user?.id || null;
+const user = localStorage.getItem('user')
+const parsedUser = JSON.parse(user ? user : '{}') as AuthUser
+const userId = parsedUser?.id || null;
 news.value.reporter = { id: userId };
 
 const alertBox = ref({

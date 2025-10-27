@@ -31,7 +31,7 @@ if(token && user) {
       <div class="text-center animate-fade bg-red-500" v-if="message">
         <h4>{{ message }}</h4>
       </div>
-      <div class="max-w-7xl mx-auto px-6 py-3 flex items-center">
+      <div class="max-w-auto mx-auto px-6 py-3 flex items-center">
         <div class="sm:px-7">
           <img @click="goHome" alt="Vue logo"
           class="hidden sm:block w-7 h-7 lg:w-9 lg:h-9 sm:w-8 sm:h-8 rounded object-cover cursor-pointer"

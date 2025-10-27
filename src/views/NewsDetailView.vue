@@ -10,7 +10,6 @@ const router = useRouter()
 const childSection = ref<HTMLElement | null>(null)
 const loading = ref(false)
 const err = ref<string | null>(null)
-const showComments = ref(false)
 const newsStore = useNewsListStore()
 const { news } = storeToRefs(newsStore)
 import { useAuthStore } from '@/stores/auth'

@@ -66,11 +66,11 @@ onMounted(() => {
             <!-- Header row -->
             <div class="py-2 bg-black text-white font-bold mb-5 mt-5 rounded-lg col-span-5 content-center w-full">
             <div class="grid grid-cols-5">
-                <div class="text-center min-w-[180px]">ID</div>
-                <div class="text-center min-w-[180px]">Username</div>
-                <div class="text-center min-w-[180px]">Display Name</div>
-                <div class="text-center min-w-[180px]">Gmail</div>
-                <div class="text-center min-w-[180px]">Role</div>
+                <div class="text-center sm:mix-w-[180px]">ID</div>
+                <div class="text-center sm:min-w-[180px]">Username</div>
+                <div class="text-center sm:min-w-[180px]">Display Name</div>
+                <div class="text-center sm:min-w-[180px]">Gmail</div>
+                <div class="text-center sm:min-w-[180px]">Role</div>
             </div>
             </div>
 

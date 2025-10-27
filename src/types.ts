@@ -38,6 +38,7 @@ export interface NewsState {
 export type roles = 'ROLE_READER' | 'ROLE_MEMBER' | 'ROLE_ADMIN'
 
 export interface AuthUser{
+  id: number
   displayName: string
   profileImage: string
   roles: roles[]
