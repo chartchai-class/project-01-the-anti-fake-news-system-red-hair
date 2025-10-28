@@ -12,9 +12,6 @@ import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import UserManageView from '@/views/UserManageView.vue'
-import { useCommentListStore } from '@/stores/comment'
-import CommentService from '@/services/CommentService'
-import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,9 +30,9 @@ const router = createRouter({
       path: '/news/:id',
       name: 'news-detail',
       component: NewsDetailView,
-      props: true,
+      props: route => ({ id: Number(route.params.id) }),
       beforeEnter: (to) => {
-        const id = parseInt(to.params.id as string)
+        const id = Number(to.params.id)
         const newsStore = useNewsListStore()
         return NewsServices.getNewsById(id)
           .then((response) => {
@@ -52,7 +49,7 @@ const router = createRouter({
           path: 'view-comments',
           name: 'view-comments',
           component: CommentListView,
-          props: true
+          props: route => ({ id: Number(route.params.id) })
         },
         {
           path: 'post-comment',

@@ -45,7 +45,7 @@ onMounted(() => {
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex flex-col items-center">
         <!-- Back button -->
         <RouterLink :to="{ name: 'home' }" class="self-start">
-            <button class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 mt-6 mb-4 shadow">Back</button>
+            <button class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 sm:ml-32 mt-6 mb-4 shadow">Back</button>
         </RouterLink>
         <h1 class="text-3xl font-bold text-center mb-6 text-black">User Management</h1>
 
@@ -59,22 +59,24 @@ onMounted(() => {
         </div>
         <!-- Dropdown for selecting number of events per page -->
 
-        <div class="grid grid-cols-5 w-200">
-            <div class="py-2 bg-black text-white font-bold mb-5 mt-5  rounded-lg col-span-5 content-center">
-                <div class="grid grid-cols-5">
-                    <div class="text-center">ID</div>
-                    <div class="text-center">Username</div>
-                    <div class="text-center">Display Name</div>
-                    <div class="text-center">Gmail</div>
-                    <div class="text-center">Role</div>
-                </div>
+        <!-- Scrollable wrapper -->
+        <div class="w-full sm:w-auto overflow-x-auto">
+        <!-- Force a minimum width so the grid doesn’t shrink too much -->
+        <div class="grid grid-cols-5 min-w-[900px] sm:min-w-full p-4">
+            <!-- Header row -->
+            <div class="py-2 bg-black text-white font-bold mb-5 mt-5 rounded-lg col-span-5 content-center w-full">
+            <div class="grid grid-cols-5">
+                <div class="text-center sm:mix-w-[180px]">ID</div>
+                <div class="text-center sm:min-w-[180px]">Username</div>
+                <div class="text-center sm:min-w-[180px]">Display Name</div>
+                <div class="text-center sm:min-w-[180px]">Gmail</div>
+                <div class="text-center sm:min-w-[180px]">Role</div>
+            </div>
             </div>
 
-            
             <UserCard v-for="user in users" :key="user.id" :user="user" />
-            
         </div>
-        
+        </div>
 
         <div class="flex justify-between gap-4 mt-6 w-full max-w-md">
             <div :class="{ 'invisible': page <= 1 }">

@@ -10,7 +10,6 @@ const router = useRouter()
 const childSection = ref<HTMLElement | null>(null)
 const loading = ref(false)
 const err = ref<string | null>(null)
-const showComments = ref(false)
 const newsStore = useNewsListStore()
 const { news } = storeToRefs(newsStore)
 import { useAuthStore } from '@/stores/auth'
@@ -49,6 +48,24 @@ function toggleDelete() {
     })
 }
 
+// 🔹 Toggle navigation helper functions
+function toggleComments() {
+  if (route.name === 'view-comments') {
+    // if already open, go back to parent news view
+    router.push({ name: 'news-detail', params: { id: news.value?.id } })
+  } else {
+    router.push({ name: 'view-comments', params: { id: news.value?.id } })
+  }
+}
+
+function toggleVoteComment() {
+  if (route.name === 'post-comment') {
+    router.push({ name: 'news-detail', params: { id: news.value?.id } })
+  } else {
+    router.push({ name: 'post-comment', params: { id: news.value?.id } })
+  }
+}
+
 // whenever route changes to a child, scroll into view
 watch(
   () => route.fullPath,
@@ -84,7 +101,7 @@ function onModalConfirm() {
   @confirm="onModalConfirm"
   @close="alertBox.show = false"
   />
-  <button @click="goHome" class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 mt-6 mb-4 shadow">Back</button>
+  <button @click="goHome" class="bg-black text-white px-5 py-1 rounded-lg hover:bg-[#720000] ml-6 sm:ml-32 mt-6 mb-4 shadow">Back</button>
   <div class="container mx-auto px-4 py-6">
     <div v-if="err" class="text-red-600">{{ err }}</div>
     <div v-else-if="loading" class="text-gray-500">Loading…</div>
@@ -96,7 +113,7 @@ function onModalConfirm() {
           </div>
           <div v-if="!news.isDeleted && authStore.isAdmin" class="inline-flex items-center rounded-md shadow-sm">
             <button @click="toggleDelete"
-              class="text-slate-800 hover:text-blue-600 text-sm bg-white hover:bg-slate-100 border border-slate-200 rounded-r-lg font-medium px-4 py-2 inline-flex space-x-1 items-center">
+              class="text-slate-800 hover:text-blue-600 text-sm bg-white hover:bg-slate-100 border border-gray-200 rounded-lg font-medium px-4 py-2 inline-flex space-x-1 items-center">
               <span>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                       stroke="currentColor" class="w-6 h-6">
@@ -149,20 +166,20 @@ function onModalConfirm() {
 
         <!-- Show Comments and Vote & Comment Buttons -->
         <div class="flex items-center justify-between gap-4 text-sm text-gray-600 mb-4">
-          <RouterLink :to="{ name: 'view-comments'}">
-            <button @click="showComments = true" 
-            class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]">
-              <span v-if="authStore.isAdmin">Show Comments ({{ news.comments.length }})</span>
-              <span v-else>Show Comments ({{ news.comments.filter(c => !c.isDeleted).length }})</span>
-            </button>
-          </RouterLink>
-          <div class="flex flex-col gap-2">
-            <RouterLink :to="{ name: 'post-comment' }">
-              <button class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]">
-                Vote & Comment
-              </button>
-            </RouterLink>
-          </div>
+          <button
+            @click="toggleComments"
+            class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]"
+          >
+            <span v-if="authStore.isAdmin">Show Comments ({{ news.comments.length }})</span>
+            <span v-else>Show Comments ({{ news.comments.filter(c => !c.isDeleted).length }})</span>
+          </button>
+
+          <button
+            @click="toggleVoteComment"
+            class="inline-flex items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000]"
+          >
+            Vote & Comment
+          </button>
         </div>
       </div>
     </div>

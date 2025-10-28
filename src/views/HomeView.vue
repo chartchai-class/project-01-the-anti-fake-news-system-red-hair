@@ -62,25 +62,25 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll) })
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-6">
-    <div class="flex justify-between items-center grid grid-cols-3 content-center mb-4">
-      <h1 class="text-2xl font-bold">
+  <div class="container mx-auto px-6 py-6">
+    <div class="flex justify-between items-center content-center mb-4 sm:mb-0">
+      <h1 class="text-2xl font-bold sm:px-7">
         <span class="text-[#AB0000]">N</span>EWS LIST
       </h1>
-      <div></div>
-      <div class="grid grid-cols-2">
-        <span class="w-15" v-if="authStore.isAdmin">
+      <div class="flex gap-1 sm:gap-6 sm:px-7">
+      
+        <span class="w-15 justify-self-end" v-if="authStore.isAdmin">
           <RouterLink
           :to="{ name: 'user-manage' }"
-          class=" inline-flex justify-center items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000] text-xs sm:text-base"
+          class="inline-flex justify-center items-center w-28 sm:w-32 gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000] text-xs sm:text-base"
           >
           Manage users      
           </RouterLink>
         </span>
-        <span v-if="authStore.isMember || authStore.isAdmin">
+        <span class="justify-self-end" v-if="authStore.isMember || authStore.isAdmin">
           <RouterLink
           :to="{ name: 'post-news' }"
-          class="inline-flex justify-center items-center gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000] text-xs sm:text-base"
+          class="inline-flex justify-center items-center w-28 sm:w-32 gap-2 rounded-lg bg-black text-white px-3 py-1.5 hover:bg-[#720000] text-xs sm:text-base"
           >
           Add News
           </RouterLink>
@@ -88,10 +88,10 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll) })
       </div>
     </div>
 
-    <div class="flex grid grid-cols-3">
+    <div class="flex grid xl:grid-cols-3 sm:px-7 sm:py-3">
       <div class="content-center"><FilterBar v-model:status="status" v-model:pageSize="pageSize" /></div>
       <div></div>
-      <div><SearchBar v-model:searchBy="searchBy" v-model:keyword="keyword"/></div>
+      <div class="sm:justify-self-end justify-self-start"><SearchBar v-model:searchBy="searchBy" v-model:keyword="keyword"/></div>
     </div>
 
     <div v-if="err" class="p-4 text-red-600">Error: {{ err }}</div>
@@ -99,7 +99,7 @@ onUnmounted(() => { window.removeEventListener('scroll', handleScroll) })
       <LoadingCircle />
     </div>
 
-    <div v-else class="grid md:grid-cols-3 gap-4">
+    <div v-else class="grid md:grid-cols-3 gap-8 sm:px-7">
       <NewsCard v-for="n in news" :key="n.id" :item="n" />
     </div>
 
