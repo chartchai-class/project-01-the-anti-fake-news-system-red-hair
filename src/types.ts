@@ -70,3 +70,12 @@ export interface CommentState {
     commentList: Comment[] | null
     totalComments: number
 } 
+
+export interface EditUser {
+  firstName: string
+  lastName: string
+  displayName: string
+  email: string
+  profileImage: string
+  phoneNumber: string
+}
