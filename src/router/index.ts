@@ -12,6 +12,7 @@ import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import UserManageView from '@/views/UserManageView.vue'
+import ProfileEditView from '@/views/ProfileEditView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -78,6 +79,11 @@ const router = createRouter({
       path: '/user-manage',
       name: 'user-manage',
       component: UserManageView
+    },
+    {
+      path: '/profile/edit',
+      name: 'edit-profile',
+      component: ProfileEditView
     }
   ],
 })
