@@ -63,6 +63,10 @@ function editProfile() {
                     <p class="text-sm sm:text-lg font-semibold text-gray-900 flex-1">{{ user?.email }}</p>
                 </div>
                 <div class="flex items-center h-10">
+                    <p class="text-xs sm:text-sm text-gray-500 mb-0 flex-1 w-48 sm:ml-3 ml-5">Phone Number</p>
+                    <p class="text-sm sm:text-lg font-semibold text-gray-900 flex-1">{{ user?.phoneNumber }}</p>
+                </div>
+                <div class="flex items-center h-10">
                     <p class="text-xs sm:text-sm text-gray-500 mb-0 flex-1 w-48 sm:ml-3 ml-5">Role(s)</p>
                     <div class="flex flex-col flex-1">
                       <p v-for="role in user?.roles" :key="role" class="text-sm sm:text-lg font-semibold text-gray-900">{{ role }}</p>

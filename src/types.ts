@@ -76,6 +76,6 @@ export interface EditUser {
   lastName: string
   displayName: string
   email: string
-  phoneNumber: string
   profileImage: string
+  phoneNumber: string
 }
