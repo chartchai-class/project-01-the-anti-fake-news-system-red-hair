@@ -1,4 +1,5 @@
 import apiClient from '@/services/AxiosClient'
+import type { EditUser } from '@/types'
 
 export default {
     getAllUsers() {
@@ -12,5 +13,8 @@ export default {
     },
     editUser(id: number, roles: string[]) {
         return apiClient.put(`/users/profiles/${id}`, roles)
+    },
+    updateUserProfile(updatedProfile: EditUser) {
+    return apiClient.put('/profiles/me', updatedProfile)
     }
 }
