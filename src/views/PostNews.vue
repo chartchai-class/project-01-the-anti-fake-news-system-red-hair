@@ -9,7 +9,7 @@ import type { AuthUser } from '@/types';
 const news = ref({
     id: 0,
     title: '',
-    category: '',
+    category: 'General',
     reporter: {},
     newsDateTime: new Date(),
     description: '',
@@ -122,12 +122,6 @@ function clearForm(){
                     <option value="Technology">Technology</option>
                     <option value="Health">Health</option>
                     </select>
-                </div>
-
-                <div>
-                    <label class="block mb-2 font-semibold text-gray-700">Description</label>
-                    <textarea v-model="news.description" placeholder="Enter short description..." rows="2"
-                    class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 transition"></textarea>
                 </div>
 
                 <div>
