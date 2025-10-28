@@ -29,6 +29,11 @@ function handleScroll(){
 function scrollToTop(){
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
+function improveSearchKeyword(searchKeyword: string): string {
+  searchKeyword = searchKeyword.trim().replace(/\s+/g, ' ')
+  searchKeyword = searchKeyword.replace(/[[\]#?]/g, (word) => encodeURIComponent(word))
+  return searchKeyword
+}
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
@@ -40,7 +45,7 @@ onMounted(() => {
       ? NewsServices.getNewsByAdmin
       : NewsServices.getNewsByPage
 
-    fetchNews(page.value, pageSize.value, status.value, searchBy.value, keyword.value)
+    fetchNews(page.value, pageSize.value, status.value, searchBy.value, improveSearchKeyword(keyword.value))
       .then((response) => {
         news.value = response.data
         totalNews.value = response.headers['x-total-count'] ? parseInt(response.headers['x-total-count']) : 0

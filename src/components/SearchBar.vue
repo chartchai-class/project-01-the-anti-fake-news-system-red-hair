@@ -41,7 +41,7 @@ const clearSearch = () => {
         @change="emit('update:searchBy', ($event.target as HTMLSelectElement).value as searchType)"
       >
         <option value="title">Title</option>
-        <option value="description">Description</option>
+        <option value="content">Content</option>
         <option value="reporter">Reporter</option>
       </select>
 

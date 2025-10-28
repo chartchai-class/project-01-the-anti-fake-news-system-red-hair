@@ -71,7 +71,7 @@ function goNewsDetail() {
       </div>
 
       <h3 class="text-lg font-semibold mb-1">{{ item.title }}</h3>
-      <p class="text-gray-600 line-clamp-2">{{ item.description }}</p>
+      <p class="text-gray-600 line-clamp-2">{{ item.content }}</p>
 
       <div class="flex items-center gap-3 text-xs text-gray-600 mt-2">
         <span>Fake: {{ item.fakeCount }}</span>
