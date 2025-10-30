@@ -11,7 +11,7 @@ const props = defineProps<{
 }>()
 const router = useRouter();
 const selectedRole = ref<string>(props.user.roles[0] || '');
-const previousRole = ref<string>(selectedRole.value); // ✅ store old role
+const previousRole = ref<string>(selectedRole.value); // store old role
 
 const alertBox = ref({
   show: false,

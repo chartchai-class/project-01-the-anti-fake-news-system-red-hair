@@ -4,7 +4,6 @@ import { useAuthStore } from '@/stores/auth'
 import CommentService from '@/services/CommentService';
 import { useNewsListStore } from '@/stores/news'
 import AlertBox from '@/components/AlertBox.vue'
-import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 const authStore = useAuthStore()
 const props = defineProps<{
@@ -18,8 +17,6 @@ const alertBox = ref({
   message: '',
   type: 'success' as 'success' | 'error'
 })
-
-const router = useRouter()
 
 function onModalConfirm() {
   alertBox.value.show = false

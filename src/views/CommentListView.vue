@@ -14,17 +14,6 @@ const totalComments = ref(0)
 const pageSize = ref(5)
 const page = ref(1)
 
-// const page = ref(1)
-// const pageSize = 3
-
-// NEED to check loading image and put skeleton if loading too long
-
-// const pagedComments = computed(() => {
-//   if (!props.news) return []
-//   const start = (page.value - 1) * pageSize
-//   return props.news.comments.slice(start, start + pageSize)
-// })
-
 const authStore = useAuthStore();
 const newsId = (props.news as News).id
 onMounted(() =>{
@@ -55,9 +44,7 @@ function loadComments(){
         return { name: 'news-detail' }
       })
   }
-}
-
-          
+}      
 </script>
 
 <template>
