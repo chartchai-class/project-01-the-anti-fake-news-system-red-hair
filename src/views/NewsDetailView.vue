@@ -48,7 +48,7 @@ function toggleDelete() {
     })
 }
 
-// 🔹 Toggle navigation helper functions
+// Toggle navigation helper functions
 function toggleComments() {
   if (route.name === 'view-comments') {
     // if already open, go back to parent news view
@@ -185,7 +185,6 @@ function onModalConfirm() {
     </div>
 
     <!-- comment modal -->
-    <!-- <CommentListView v-if="news" :comments="news.comments" :show="showComments" @close="showComments = false"/> -->
     <div ref="childSection">
       <router-view :news="news" />
     </div>

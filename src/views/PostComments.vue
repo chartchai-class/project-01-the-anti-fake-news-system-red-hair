@@ -144,14 +144,7 @@ function clearForm() {
                         Not-Fake
                     </button>
                 </div>
-
-                <!-- Author -->
-                <!-- <div>
-                    <label class="block mb-2 font-semibold text-gray-700">Author</label>
-                    <input v-model="comment.author" type="text"
-                    class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 transition" />
-                </div> -->
-
+                
                 <!-- Content -->
                 <div>
                     <label class="block mb-2 font-semibold text-gray-700">Content</label>
