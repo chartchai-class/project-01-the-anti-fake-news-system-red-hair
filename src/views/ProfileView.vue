@@ -59,6 +59,14 @@ function editProfile() {
                     <p class="text-sm sm:text-lg font-semibold text-gray-900 flex-1"> {{ user?.lastName }}</p>
                 </div>
                 <div class="flex items-center h-10">
+                    <p class="text-xs sm:text-sm text-gray-500 mb-0 flex-1 w-48 sm:ml-3 ml-5">User Name</p>
+                    <p class="text-sm sm:text-lg font-semibold text-gray-900 flex-1"> {{ user?.username }}</p>
+                </div>
+                <div class="flex items-center h-10">
+                    <p class="text-xs sm:text-sm text-gray-500 mb-0 flex-1 w-48 sm:ml-3 ml-5">Display Name</p>
+                    <p class="text-sm sm:text-lg font-semibold text-gray-900 flex-1"> {{ user?.displayName }}</p>
+                </div>
+                <div class="flex items-center h-10">
                     <p class="text-xs sm:text-sm text-gray-500 mb-0 flex-1 w-48 sm:ml-3 ml-5">Email</p>
                     <p class="text-sm sm:text-lg font-semibold text-gray-900 flex-1">{{ user?.email }}</p>
                 </div>

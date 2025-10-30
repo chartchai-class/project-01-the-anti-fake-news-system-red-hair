@@ -44,16 +44,7 @@ const clearSearch = () => {
         <option value="content">Content</option>
         <option value="reporter">Reporter</option>
       </select>
-
-      <!-- Search Input -->
-      <!-- <BaseInput
-        v-model="keywordField"
-        type="text"
-        placeholder="Search"
-        @change="emit('update:keyword', ($event.target as HTMLSelectElement).value as any)"
-        class="leading-none align-middle bg-white-800 h-8 sm:h-10 flex px-5 w-32 sm:w-full rounded-r-full text-[11px] sm:text-sm focus:outline-none focus:ring-0 focus:shadow-none border-2 border-l-0 border-gray-500"
-      /> -->
-
+      
       <!-- Search Input -->
       <div class="relative w-32 sm:w-full">
         <BaseInput
