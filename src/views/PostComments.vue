@@ -7,7 +7,7 @@ import { useNewsListStore } from '@/stores/news'
 import NewsServices from '@/services/NewsServices';
 import type { AuthUser, News } from '@/types';
 import SingleImageUpload from '@/components/SingleImageUpload.vue';
-// Props: need the related newsId
+
 const props = defineProps<{ newsId: number, news?: News }>()
 const router = useRouter()
 const newsStore = useNewsListStore();
@@ -36,6 +36,15 @@ const alertBox = ref({
 function postComment() {
   if (alertBox.value.show) return;
 
+  // Check if user is logged in
+  if (!userId) {
+    alertBox.value.show = true;
+    alertBox.value.title = 'Failed';
+    alertBox.value.message = 'Please log in to vote or comment.';
+    alertBox.value.type = 'error';
+    return;
+  }
+
   // vote type is required
   else if (!comment.value.voteType) {
     alertBox.value.show = true;
@@ -43,7 +52,9 @@ function postComment() {
     alertBox.value.message = 'Please select a vote (Fake or Not-Fake).';
     alertBox.value.type = 'error';
     return;
-  } else {
+  } 
+  
+  else {
     CommentService.saveComment(props.newsId, userId, comment.value)
       .then(() => {
         console.log('Comment saved successfully');
