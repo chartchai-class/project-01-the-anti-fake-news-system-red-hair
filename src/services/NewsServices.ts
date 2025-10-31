@@ -1,38 +1,49 @@
-import axios from 'axios'
+import type { filterType, News, searchType } from '@/types'
+import apiClient from './AxiosClient'
+import type { AxiosResponse } from 'axios'
 
-// repo URL donot contain /new
-const BASE = 'https://cbsd-news-mock-production.up.railway.app'
-
-
-// Shared axios instance
-const apiClient = axios.create({
-  baseURL: BASE,
-  withCredentials: false,
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
-})
-
+// Don't forget to pharse datatype, especially Date object manually after getting data from server -- i removed revive function for now -- will add later
 export default {
-  //  Get all news (no pagination)
   getNews() {
-    return apiClient.get('news', { params: { t: Date.now() } })
+    return apiClient.get('/news')
   },
 
-  //  Get single news by id.
-  getNewsById(id: number) {
-    return apiClient.get(`news/${id}`, { params: { t: Date.now() } })
-  },
-
-  // Server-side pagination + filter
-  getNewsByPage(page: number, perPage: number, status?: 'fake'|'not-fake'|'all') {
+  getNewsByAdmin(page: number, perPage: number, status?: filterType, searchBy?: searchType, keyword?: string): Promise<AxiosResponse<News[]>> {
     const params: Record<string, string|number> = {
-      _page: page,
-      _limit: perPage,
-      t: Date.now(),
+      page: page - 1,
+      size: perPage,
     }
-    if (status && status !== 'all') params.voteType = status
-    return apiClient.get('news', { params })
+    if (status && status !== 'all') params.status = status 
+    if (searchBy) params.searchBy = searchBy // always send searchBy if exists
+    if (keyword && keyword.trim() !== '') params.search = keyword // using like for partial match
+    return apiClient.get('/admin/news', { params })
+  },
+
+  getNewsById(id: number) {
+    return apiClient.get(`/news/${id}`)
+  },
+
+  getNewsByPage(page: number, perPage: number, status?: filterType, searchBy?: searchType, keyword?: string): Promise<AxiosResponse<News[]>> {
+    const params: Record<string, string|number> = {
+      page: page - 1,
+      size: perPage,
+    }
+    if (status && status !== 'all') params.status = status 
+    if (searchBy) params.searchBy = searchBy // always send searchBy if exists
+    if (keyword && keyword.trim() !== '') params.search = keyword // using like for partial match
+    return apiClient.get<News[]>('news', { params })
+  },
+
+  getNewsByKeyword(keyword: string, perPage: number, page: number): Promise<AxiosResponse<News[]>> {
+    return apiClient.get<News[]>('/news?title=' + keyword + '&size=' + perPage + '&page=' + (page - 1))
+  },
+
+  saveNews(news: any){
+    const {id, ...newData} = news // will handle id as increment in backend
+    return apiClient.post('/news', newData)
+  },
+
+  toggleSoftDeleteNews(id: number, isDeleted: boolean) {
+    return apiClient.post(`/news/${id}/toggle-delete`, { isDeleted })
   },
 }

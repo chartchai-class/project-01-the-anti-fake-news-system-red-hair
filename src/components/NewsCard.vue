@@ -2,6 +2,8 @@
 import { ref } from 'vue'
 import type { News } from '@/types'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+const authStore = useAuthStore()
 
 const router = useRouter()
 
@@ -16,9 +18,18 @@ function goNewsDetail() {
 </script>
 
 <template>
-  <article class="rounded-xl border bg-white overflow-hidden shadow-md lg:mx-2 border-white">
+  <article class="rounded-xl border bg-white overflow-hidden shadow-md border-white">
     <!-- img + skeleton/placeholder -->
     <div class="relative w-full h-48 bg-gray-100 overflow-hidden">
+
+      <div v-if="authStore.isAdmin"
+        class="absolute top-2 right-2 z-10 text-xs px-2 py-1 rounded-md font-semibold"
+        :class="item.isDeleted
+          ? 'bg-red-600 text-white'
+          : 'bg-green-600 text-white'"
+      >
+        {{ item.isDeleted ? 'Deleted' : 'Active' }}
+      </div>
       <!-- realimg -->
       <img
         @click="goNewsDetail"
@@ -60,7 +71,7 @@ function goNewsDetail() {
       </div>
 
       <h3 class="text-lg font-semibold mb-1">{{ item.title }}</h3>
-      <p class="text-gray-600 line-clamp-2">{{ item.description }}</p>
+      <p class="text-gray-600 line-clamp-2">{{ item.content }}</p>
 
       <div class="flex items-center gap-3 text-xs text-gray-600 mt-2">
         <span>Fake: {{ item.fakeCount }}</span>
@@ -74,6 +85,6 @@ function goNewsDetail() {
   </article>
 </template>
 
-<style scoped>
+<!-- <style scoped>
 .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-</style>
+</style> -->

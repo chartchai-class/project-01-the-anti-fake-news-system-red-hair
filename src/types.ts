@@ -11,6 +11,7 @@ export interface News {
   notFakeCount: number
   voteType: voteType
   comments: Comment[]
+  isDeleted: boolean
 }
 
 export interface Comment {
@@ -21,10 +22,60 @@ export interface Comment {
   image: string //url
   voteType: voteType
   commentDateTime: Date
+  isDeleted: boolean
 }
+
+export type filterType = 'all' | 'fake' | 'not-fake'
+
+export type searchType = 'title' | 'content' | 'reporter'
 
 export type voteType = 'fake' | 'not-fake'
 
 export interface NewsState {
   news: News | null
+}
+
+export type roles = 'ROLE_READER' | 'ROLE_MEMBER' | 'ROLE_ADMIN'
+
+export interface AuthUser{
+  id: number
+  displayName: string
+  profileImage: string
+  roles: roles[]
+}
+
+export interface User {
+  id: number
+  username: string // wil pass from backend later
+  firstName: string
+  lastName: string
+  displayName: string
+  email: string
+  phoneNumber: string
+  profileImage: string
+  roles: roles[]
+  reportedNews: News[]
+  comments: Comment[]
+}
+
+export interface MessageState {
+    message: string
+}
+
+export interface UserState {
+    user: User | null
+}
+
+export interface CommentState {
+    commentList: Comment[] | null
+    totalComments: number
+} 
+
+export interface EditUser {
+  firstName: string
+  lastName: string
+  displayName: string
+  email: string
+  profileImage: string
+  phoneNumber: string
 }

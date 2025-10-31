@@ -1,97 +1,115 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useNewsListStore } from '@/stores/news'
-import AlterBox from '@/components/AlterBox.vue'
+import AlertBox from '@/components/AlertBox.vue'
 import { useRouter } from 'vue-router'
-// Props: need the related newsId
-const props = defineProps<{ newsId: number }>()
+import CommentService from '@/services/CommentService';
+import { useNewsListStore } from '@/stores/news'
+import NewsServices from '@/services/NewsServices';
+import type { AuthUser, News } from '@/types';
+import SingleImageUpload from '@/components/SingleImageUpload.vue';
+
+const props = defineProps<{ newsId: number, news?: News }>()
 const router = useRouter()
-const newsListStore = useNewsListStore()
+const newsStore = useNewsListStore();
+const comment = ref({
+  id: 0,
+  newsId: 0,
+  author: {},
+  content: '',
+  image: '',
+  voteType: 'not-fake' as 'fake' | 'not-fake',
+  commentDateTime: new Date()
+});
 
-const author = ref('Anonymous')
-const content = ref('')
-const image = ref('')
-const voteType = ref<'fake' | 'not-fake'>('not-fake')
+const user = localStorage.getItem('user')
+const parseUser = JSON.parse(user ? user : '{}') as AuthUser
+const userId = parseUser.id;
+comment.value.author = { id: userId };
 
-const alterShow = ref(false)
-const alterMessage = ref('')
-const alertTitle = ref('Notification')
-const alertType = ref<'success' | 'error'>('success')
+const alertBox = ref({
+    show: false,
+    title: 'Notification',
+    message: '',
+    type: 'success' as 'success' | 'error'
+})
 
 function postComment() {
-  if (alterShow.value) return;
+  if (alertBox.value.show) return;
 
-  if (!author.value.trim()) {
-    alertTitle.value = 'Failed'
-    alterMessage.value = 'Author is required.'
-    alterShow.value = true
-    alertType.value = 'error'
-    return
+  // Check if user is logged in
+  if (!userId) {
+    alertBox.value.show = true;
+    alertBox.value.title = 'Failed';
+    alertBox.value.message = 'Please log in to vote or comment.';
+    alertBox.value.type = 'error';
+    return;
   }
 
-  // Vote required
-  if (!voteType.value) {
-    alertTitle.value = 'Failed'
-    alterMessage.value = 'Please select a vote (Fake or Not-Fake).'
-    alterShow.value = true
-    alertType.value = 'error'
-    return
+  // vote type is required
+  else if (!comment.value.voteType) {
+    alertBox.value.show = true;
+    alertBox.value.title = 'Failed';
+    alertBox.value.message = 'Please select a vote (Fake or Not-Fake).';
+    alertBox.value.type = 'error';
+    return;
+  } 
+  
+  else {
+    CommentService.saveComment(props.newsId, userId, comment.value)
+      .then(() => {
+        console.log('Comment saved successfully');
+        alertBox.value.show = true;
+        alertBox.value.title = 'Posted';
+        alertBox.value.message = 'Comment posted successfully!';
+        alertBox.value.type = 'success';
+      })
+      .catch((error) => {
+        console.error('Error saving comment:', error);
+        alertBox.value.show = true;
+        alertBox.value.title = 'Error';
+        alertBox.value.message = 'There was an error posting the comment. Please try again.';
+        alertBox.value.type = 'error';
+      })
+      .finally(() => {
+        clearForm();
+      });
   }
 
-  // Check if there is content or an image to post a full comment
-  const hasCommentContent = content.value.trim() !== '' || image.value.trim() !== '';
-
-  if (hasCommentContent){
-    //If there is content or an image
-    newsListStore.addComment(props.newsId, {
-    author: author.value,
-    content: content.value || '',
-    image: image.value || '',
-    voteType: voteType.value,
-    })
-    alertTitle.value = 'Posted'
-    alterMessage.value = 'Comment posted successfully!'
-    alertType.value = 'success'
-  } else {
-    // If there is no content or image, only update the vote count
-    if (voteType.value === 'fake') {
-      newsListStore.voteFake(props.newsId);
-    } else {
-      newsListStore.voteNotFake(props.newsId);
-    }
-    alertTitle.value = 'Voted'
-    alterMessage.value = 'Vote recorded successfully!'
-    alertType.value = 'success'
-  }
-  clearForm()
-  alterShow.value = true
 }
-
 function onModalConfirm() {
-  alterShow.value = false
-  if (alertType.value === 'success') {
+  alertBox.value.show = false;
+  if (alertBox.value.type === 'success') {
     // go back to news detail page
+    NewsServices.getNewsById(props.newsId)
+      .then((response) => {
+        newsStore.setNews(response.data as News)
+      })
+      .catch((error) => {
+        console.error('Failed to fetch news item:', error)
+        return { name: 'home'}
+      })
     router.push({ name: 'news-detail', params: { id: props.newsId } })
   }
 }
 
 function clearForm() {
-  author.value = 'Anonymous'
-  content.value = ''
-  image.value = ''
-  voteType.value = 'not-fake'
+  comment.value.author = { id: userId };
+  comment.value.content = ''
+  comment.value.image = ''
+  comment.value.voteType = 'not-fake'
 }
+
 </script>
 
 <template>
-  <AlterBox
-    :show="alterShow"
-    :title="alertTitle"
-    :message="alterMessage"
-    :type="alertType"
+  <AlertBox
+    :show="alertBox.show"
+    :title="alertBox.title"
+    :message="alertBox.message"
+    :type="alertBox.type"
     confirmText="OK"
     @confirm="onModalConfirm"
-    @close="alterShow = false"
+    @close="alertBox.show = false"
   />
     <div class="container mx-auto px-4 py-6">
         <h2 class="text-2xl font-semibold mb-4 text-center">Vote & Comment</h2>
@@ -103,10 +121,10 @@ function clearForm() {
                 <div class="flex justify-center gap-4">
                     <button
                         type="button"
-                        @click="voteType = 'fake'"
+                        @click="comment.voteType = 'fake'"
                         :class="[
                             'px-4 py-2 rounded-lg font-bold shadow transition',
-                            voteType === 'fake'
+                            comment.voteType === 'fake'
                             ? 'bg-red-600 text-white'
                             : 'bg-red-100 text-red-600 hover:bg-red-200'
                         ]"
@@ -115,10 +133,10 @@ function clearForm() {
                     </button>
                     <button
                         type="button"
-                        @click="voteType = 'not-fake'"
+                        @click="comment.voteType = 'not-fake'"
                         :class="[
                             'px-4 py-2 rounded-lg font-bold shadow transition',
-                            voteType === 'not-fake'
+                            comment.voteType === 'not-fake'
                             ? 'bg-green-600 text-white'
                             : 'bg-green-100 text-green-600 hover:bg-green-200'
                         ]"
@@ -126,29 +144,23 @@ function clearForm() {
                         Not-Fake
                     </button>
                 </div>
-
-                <!-- Author -->
-                <div>
-                    <label class="block mb-2 font-semibold text-gray-700">Author</label>
-                    <input v-model="author" type="text"
-                    class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 transition" />
-                </div>
-
+                
                 <!-- Content -->
                 <div>
                     <label class="block mb-2 font-semibold text-gray-700">Content</label>
-                    <textarea v-model="content" rows="3" placeholder="Write your comment..."
+                    <textarea v-model="comment.content" rows="3" placeholder="Write your comment..."
                     class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 transition"></textarea>
                 </div>
 
                 <!-- Image URL -->
                 <div>
-                    <label class="block mb-2 font-semibold text-gray-700">Image URL (optional)</label>
-                    <input v-model="image" type="text" placeholder="Enter image URL"
+                    <label class="block mb-2 font-semibold text-gray-700">Image Upload</label>
+                    <!-- <input v-model="comment.image" type="text" placeholder="Enter image URL"
                     class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-200 transition" />
-                    <div v-if="image.trim()" class="mt-3 flex justify-center">
-                    <img :src="image" alt="Preview" class="max-h-40 rounded-lg border shadow" />
-                    </div>
+                    <div v-if="comment.image.trim()" class="mt-3 flex justify-center">
+                    <img :src="comment.image" alt="Preview" class="max-h-40 rounded-lg border shadow" />
+                    </div> -->
+                    <SingleImageUpload type="image" v-model="comment.image"/>
                 </div>
 
                 <!-- Submit -->
