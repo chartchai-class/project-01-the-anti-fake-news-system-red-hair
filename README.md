@@ -1,21 +1,105 @@
-# Anti Fake News System - RedHair
+# Red Hair - Anti Fake News System
 
-### Members:
+The Project for SE331 Component-Based Software Development 
+where the users can post news, comments and vote the news as fake or not fake.
 
-- 652115050 - Siraphop Guntiya
-- 662115510 - Min Thant Ko
-- 662115515 - Saw Rory Yin
+This repository is meant for developing **Frontend** for the project.
 
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/k6kO_4Go)
+Course code: 953331
+
+Semester: 1/2025
 
 
-Video link: [click here](https://youtu.be/KYZoYAugS7c)
+## Team members:
 
-Deployed webiste: [click here](https://project-01-the-anti-fake-news-syste-rose.vercel.app/)
+- 652115050 - Siraphop Guntiya (Sec - 701)
+- 662115510 - Min Thant Ko (Sec - 701)
+- 662115515 - Saw Rory Yin (Sec - 701)
 
-Database link: [click here](https://cbsd-news-mock-production.up.railway.app/)
+---
 
-### Note
-The db.json is deployed on Railway (railway.com) server which free trial is available for 30 days.
-The api link will stop supporting on 19 Sept 2025.
+## Deployed link
 
+- Frontend: http://54.167.67.248:8001
+- Backend (phpMyAdmin) : http://98.93.147.121:9000
+
+*Deployed using AWS EC2.*
+
+## Repository Links
+- Frontend Repository: https://github.com/chartchai-class/project-01-the-anti-fake-news-system-red-hair
+- Backend Repository: https://github.com/chartchai-class/the-social-anti-fake-news-system-phase-ii-red-hair
+
+---
+
+## Overview
+The **Anti-Fake News System** is a web application that allows users to view, share, and evaluate news credibility through community interaction.  
+It aims to reduce the spread of misinformation by enabling users to **vote** and **comment** on whether a news article is **fake** or **not fake**.  
+
+This repository contains the **frontend** built using **Vue.js** with **Tailwind CSS**, following a **component-based software development** approach.
+
+---
+
+## Features
+
+### Non-Logged-In Users
+- View all published news articles  
+- Search for specific news items by title or content or reporter
+
+### Readers (Registered Users)
+- Vote whether a news article is *fake* or *not fake*  
+- Leave comments on news articles  
+
+### Members
+- All reader functionalities (vote, comment)  
+- Post new news articles  
+
+### Admins
+- All member functionalities  
+- Manage users (change roles)
+- Delete or undelete news and comments
+
+---
+
+## Authentication System
+
+### **Sign Up**
+Users can create an account by providing:
+- First Name  
+- Last Name  
+- Username  
+- Display Name  
+- Email Address  
+- Phone Number  
+- Profile Image  
+- Password  
+
+### **Log In**
+- Authentication is done using **username** and **password**.
+
+---
+
+## User Profile Management
+Logged-in users can edit their personal information:
+- First Name  
+- Last Name  
+- Display Name
+- Phone Number  
+- Email Address  
+- Profile Image  
+
+---
+
+## News Voting Logic
+Each news article’s credibility status dynamically updates based on the **number of votes** indicating whether it is *fake* or *not fake*.
+
+---
+
+## Tech Stack
+
+| Category | Technology |
+|-----------|-------------|
+| Framework | [Vue 3](https://vuejs.org/) |
+| Styling | [Tailwind CSS](https://tailwindcss.com/) |
+| Image Handling | [Supabase Storage](https://supabase.com/) |
+| Design Approach | Component-Based Software Development |
+| State Management | Pinia / Vuex |
